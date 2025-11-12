@@ -4,8 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Recordatorio para mantenerte hidratado - Seguimiento diario de consumo de agua">
-    <meta name="theme-color" content="#4A90E2">
+    <meta name="theme-color" content="#0891B2">
     <title>💧 Hidratador - Tu Recordatorio de Agua</title>
+
+    <!-- Google Fonts - Premium Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="styles.css">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="icon.png">
@@ -14,19 +20,28 @@
     <div class="container">
         <!-- Header -->
         <header class="header">
-            <h1>💧 Hidratador</h1>
-            <p class="subtitle">Mantente hidratado, mantente saludable</p>
+            <div class="logo-container">
+                <div class="logo">💧</div>
+            </div>
+            <h1>Hidratador</h1>
+            <p class="subtitle">Tu compañero diario de hidratación saludable</p>
         </header>
 
         <!-- Main Stats -->
         <div class="stats-container">
             <div class="stat-card">
-                <div class="stat-number" id="waterCount">0</div>
-                <div class="stat-label">Vasos hoy</div>
+                <div class="stat-icon">🥤</div>
+                <div class="stat-content">
+                    <div class="stat-number" id="waterCount">0</div>
+                    <div class="stat-label">Vasos hoy</div>
+                </div>
             </div>
             <div class="stat-card">
-                <div class="stat-number" id="waterLiters">0.0</div>
-                <div class="stat-label">Litros</div>
+                <div class="stat-icon">💧</div>
+                <div class="stat-content">
+                    <div class="stat-number" id="waterLiters">0.0</div>
+                    <div class="stat-label">Litros</div>
+                </div>
             </div>
         </div>
 
@@ -45,17 +60,20 @@
         <div class="actions">
             <button class="btn btn-primary btn-large" id="addWaterBtn">
                 <span class="btn-icon">💧</span>
-                <span>Tomé un vaso</span>
+                <span class="btn-text">Registrar vaso de agua</span>
             </button>
             <button class="btn btn-secondary" id="customAmountBtn">
-                <span class="btn-icon">🥤</span>
-                <span>Cantidad personalizada</span>
+                <span class="btn-icon">📊</span>
+                <span class="btn-text">Cantidad personalizada</span>
             </button>
         </div>
 
         <!-- Settings -->
         <div class="settings-section">
-            <h2>⚙️ Configuración</h2>
+            <div class="section-header">
+                <span class="section-icon">⚙️</span>
+                <h2>Configuración</h2>
+            </div>
 
             <div class="setting-item">
                 <label for="dailyGoal">Meta diaria (vasos):</label>
@@ -84,7 +102,10 @@
 
         <!-- History -->
         <div class="history-section">
-            <h2>📊 Historial de hoy</h2>
+            <div class="section-header">
+                <span class="section-icon">📊</span>
+                <h2>Historial de hoy</h2>
+            </div>
             <div id="historyList" class="history-list"></div>
             <button class="btn btn-outline btn-small" id="resetDayBtn">Reiniciar día</button>
         </div>

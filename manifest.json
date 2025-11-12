@@ -4,8 +4,8 @@
   "description": "Mantente hidratado con recordatorios inteligentes y seguimiento diario de consumo de agua",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#667eea",
-  "theme_color": "#4A90E2",
+  "background_color": "#06B6D4",
+  "theme_color": "#0891B2",
   "orientation": "portrait-primary",
   "icons": [
     {
