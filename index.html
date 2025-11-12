@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Recordatorio para mantenerte hidratado - Seguimiento diario de consumo de agua">
+    <meta name="theme-color" content="#4A90E2">
+    <title>💧 Hidratador - Tu Recordatorio de Agua</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon.png">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>💧 Hidratador</h1>
+            <p class="subtitle">Mantente hidratado, mantente saludable</p>
+        </header>
+
+        <!-- Main Stats -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number" id="waterCount">0</div>
+                <div class="stat-label">Vasos hoy</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="waterLiters">0.0</div>
+                <div class="stat-label">Litros</div>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-section">
+            <div class="progress-header">
+                <span>Meta diaria</span>
+                <span id="progressText">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="actions">
+            <button class="btn btn-primary btn-large" id="addWaterBtn">
+                <span class="btn-icon">💧</span>
+                <span>Tomé un vaso</span>
+            </button>
+            <button class="btn btn-secondary" id="customAmountBtn">
+                <span class="btn-icon">🥤</span>
+                <span>Cantidad personalizada</span>
+            </button>
+        </div>
+
+        <!-- Settings -->
+        <div class="settings-section">
+            <h2>⚙️ Configuración</h2>
+
+            <div class="setting-item">
+                <label for="dailyGoal">Meta diaria (vasos):</label>
+                <input type="number" id="dailyGoal" min="1" max="20" value="8">
+            </div>
+
+            <div class="setting-item">
+                <label for="glassSize">Tamaño del vaso (ml):</label>
+                <input type="number" id="glassSize" min="100" max="1000" step="50" value="250">
+            </div>
+
+            <div class="setting-item">
+                <label for="reminderInterval">Recordatorio cada (minutos):</label>
+                <input type="number" id="reminderInterval" min="15" max="240" step="15" value="60">
+            </div>
+
+            <div class="setting-item">
+                <label>
+                    <input type="checkbox" id="notificationsEnabled" checked>
+                    Activar notificaciones
+                </label>
+            </div>
+
+            <button class="btn btn-outline" id="saveSettingsBtn">Guardar configuración</button>
+        </div>
+
+        <!-- History -->
+        <div class="history-section">
+            <h2>📊 Historial de hoy</h2>
+            <div id="historyList" class="history-list"></div>
+            <button class="btn btn-outline btn-small" id="resetDayBtn">Reiniciar día</button>
+        </div>
+
+        <!-- Motivational Quote -->
+        <div class="quote-section" id="motivationalQuote">
+            💪 "El agua es la fuerza motriz de toda la naturaleza" - Leonardo da Vinci
+        </div>
+    </div>
+
+    <!-- Custom Amount Modal -->
+    <div class="modal" id="customModal">
+        <div class="modal-content">
+            <h3>Cantidad personalizada</h3>
+            <label for="customAmount">Mililitros:</label>
+            <input type="number" id="customAmount" min="50" max="2000" step="50" value="500">
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="cancelCustomBtn">Cancelar</button>
+                <button class="btn btn-primary" id="confirmCustomBtn">Agregar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
