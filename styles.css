@@ -2191,3 +2191,291 @@ body.dark-mode {
 #importFileInput {
     display: none;
 }
+
+/* ============================================
+   MISSING STYLES - FIX
+   ============================================ */
+
+/* Onboarding Features */
+.onboarding-features {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+}
+
+.feature-item {
+    font-size: 0.9375rem;
+    color: var(--gray-700);
+    font-weight: 500;
+}
+
+/* Goal Selector */
+.goal-selector {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+}
+
+.goal-btn {
+    padding: var(--space-4) var(--space-3);
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-xl);
+    background: white;
+    color: var(--gray-700);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.goal-btn:hover {
+    border-color: var(--primary-400);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.goal-btn.active {
+    border-color: var(--primary-500);
+    background: var(--primary-50);
+    color: var(--primary-700);
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+.goal-info {
+    text-align: center;
+    font-size: 0.8125rem;
+    color: var(--gray-500);
+    margin-top: var(--space-2);
+}
+
+/* Profile Setup */
+.profile-setup {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.profile-setup input,
+.profile-setup select {
+    width: 100%;
+    padding: var(--space-4);
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-xl);
+    font-size: 1rem;
+    font-family: var(--font-primary);
+    outline: none;
+    transition: all var(--transition-base);
+}
+
+.profile-setup input:focus,
+.profile-setup select:focus {
+    border-color: var(--primary-400);
+    box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
+}
+
+.weight-input,
+.activity-selector {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.weight-input label,
+.activity-selector label {
+    font-weight: 600;
+    color: var(--gray-700);
+    font-size: 0.9375rem;
+}
+
+/* Notification Button */
+.notification-btn {
+    width: 100%;
+    padding: var(--space-4) var(--space-5);
+    background: var(--gradient-primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-xl);
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-base);
+}
+
+.notification-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.notification-btn svg {
+    width: 24px;
+    height: 24px;
+}
+
+.notification-info {
+    text-align: center;
+    font-size: 0.8125rem;
+    color: var(--gray-500);
+    margin-top: var(--space-3);
+}
+
+/* Onboarding Navigation */
+.onboarding-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4) var(--space-6);
+    border-top: 1px solid var(--gray-200);
+    gap: var(--space-4);
+}
+
+.onboarding-dots {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.onboarding-dots .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--gray-300);
+    transition: all var(--transition-base);
+}
+
+.onboarding-dots .dot.active {
+    width: 24px;
+    border-radius: var(--radius-full);
+    background: var(--primary-500);
+}
+
+/* Brand Info */
+.brand-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.brand-info .user-level {
+    font-size: 0.6875rem;
+    color: var(--primary-600);
+    font-weight: 600;
+}
+
+/* Stat Card Content */
+.stat-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+/* Challenge Reward */
+.challenge-reward {
+    font-weight: 700;
+    color: var(--warning);
+    font-size: 1rem;
+    background: rgba(252, 211, 77, 0.2);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-lg);
+    position: relative;
+    z-index: 1;
+}
+
+/* Views Container */
+.views-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Progress Ring Animation */
+.progress-ring {
+    transform: rotate(-90deg);
+    transform-origin: center;
+    transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    stroke-dasharray: 534;
+    stroke-dashoffset: 534;
+}
+
+.progress-ring-bg {
+    opacity: 0.3;
+}
+
+/* Water Icon in Circle */
+.water-icon {
+    opacity: 0.1;
+}
+
+/* Responsive Fixes */
+@media (max-width: 480px) {
+    .goal-selector {
+        grid-template-columns: 1fr;
+    }
+
+    .quick-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .water-circle-container {
+        width: 180px;
+        height: 180px;
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+    }
+}
+
+/* Bottom Nav Fix */
+.bottom-nav {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--gray-200);
+    padding: var(--space-2);
+    position: sticky;
+    bottom: 0;
+    z-index: 100;
+    box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-2) var(--space-3);
+    border: none;
+    background: transparent;
+    color: var(--gray-500);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-base);
+}
+
+.nav-item svg {
+    width: 22px;
+    height: 22px;
+    transition: all var(--transition-base);
+}
+
+.nav-item.active {
+    color: var(--primary-600);
+    background: rgba(14, 165, 233, 0.1);
+}
+
+.nav-item.active svg {
+    transform: scale(1.1);
+}
+
+.nav-item:hover:not(.active) {
+    background: rgba(14, 165, 233, 0.05);
+}
