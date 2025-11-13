@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="Hidratador - La forma más inteligente de cuidar tu hidratación diaria">
-    <meta name="theme-color" content="#0EA5E9">
+    <meta name="description" content="Hidratador Pro - La aplicación más completa para tu hidratación diaria">
+    <meta name="theme-color" content="#0EA5E9" id="themeColor">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <title>Hidratador - Salud & Bienestar</title>
+    <title>Hidratador Pro - Salud & Bienestar</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,6 +28,87 @@
         <div class="gradient-orb orb-2"></div>
     </div>
 
+    <!-- Onboarding Screen -->
+    <div class="onboarding-overlay" id="onboardingOverlay">
+        <div class="onboarding-container">
+            <!-- Step 1 -->
+            <div class="onboarding-step active" data-step="1">
+                <div class="onboarding-icon">💧</div>
+                <h2>Bienvenido a Hidratador Pro</h2>
+                <p>La forma más inteligente de mantener tu hidratación diaria</p>
+                <div class="onboarding-features">
+                    <div class="feature-item">✅ Seguimiento en tiempo real</div>
+                    <div class="feature-item">✅ Recordatorios inteligentes</div>
+                    <div class="feature-item">✅ Sistema de niveles y logros</div>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="onboarding-step" data-step="2">
+                <div class="onboarding-icon">🎯</div>
+                <h2>Establece tu Meta</h2>
+                <p>¿Cuántos vasos de agua quieres tomar al día?</p>
+                <div class="goal-selector">
+                    <button class="goal-btn" data-goal="6">6 vasos</button>
+                    <button class="goal-btn active" data-goal="8">8 vasos</button>
+                    <button class="goal-btn" data-goal="10">10 vasos</button>
+                    <button class="goal-btn" data-goal="12">12 vasos</button>
+                </div>
+                <p class="goal-info">Recomendado: 8 vasos (2 litros) diarios</p>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="onboarding-step" data-step="3">
+                <div class="onboarding-icon">👤</div>
+                <h2>Personaliza tu Perfil</h2>
+                <p>Ayúdanos a conocerte mejor</p>
+                <div class="profile-setup">
+                    <input type="text" id="onboardingName" placeholder="Tu nombre" maxlength="20">
+                    <div class="weight-input">
+                        <label>Peso (kg):</label>
+                        <input type="number" id="onboardingWeight" placeholder="70" min="30" max="200">
+                    </div>
+                    <div class="activity-selector">
+                        <label>Nivel de actividad:</label>
+                        <select id="onboardingActivity">
+                            <option value="sedentary">Sedentario</option>
+                            <option value="light" selected>Actividad ligera</option>
+                            <option value="moderate">Moderado</option>
+                            <option value="active">Muy activo</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="onboarding-step" data-step="4">
+                <div class="onboarding-icon">🔔</div>
+                <h2>Activa las Notificaciones</h2>
+                <p>Recibe recordatorios amigables para mantenerte hidratado</p>
+                <button class="notification-btn" id="enableNotificationsBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                    </svg>
+                    Activar Notificaciones
+                </button>
+                <p class="notification-info">Puedes cambiar esto después en ajustes</p>
+            </div>
+
+            <!-- Navigation -->
+            <div class="onboarding-nav">
+                <button class="onboarding-btn secondary" id="onboardingBack">Atrás</button>
+                <div class="onboarding-dots">
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+                <button class="onboarding-btn primary" id="onboardingNext">Siguiente</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Main App -->
     <div class="app-container">
         <!-- Top Bar -->
@@ -44,203 +125,430 @@
                         </defs>
                     </svg>
                 </div>
-                <span class="brand-name">Hidratador</span>
+                <div class="brand-info">
+                    <span class="brand-name">Hidratador</span>
+                    <span class="user-level" id="userLevel">Nivel 1</span>
+                </div>
             </div>
             <div class="top-actions">
-                <button class="icon-btn" id="statsBtn" title="Estadísticas">
+                <button class="icon-btn" id="darkModeToggle" title="Modo oscuro">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"/>
+                        <line x1="12" y1="1" x2="12" y2="3"/>
+                        <line x1="12" y1="21" x2="12" y2="23"/>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                        <line x1="1" y1="12" x2="3" y2="12"/>
+                        <line x1="21" y1="12" x2="23" y2="12"/>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                    </svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                </button>
+                <button class="icon-btn" id="profileBtn" title="Perfil">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 3v18h18"/>
-                        <path d="M18 17V9"/>
-                        <path d="M13 17V5"/>
-                        <path d="M8 17v-3"/>
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
                     </svg>
                 </button>
             </div>
         </header>
 
-        <!-- Hero Section -->
-        <section class="hero-section">
-            <div class="achievement-badge" id="achievementBadge">
-                <svg class="badge-icon" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="url(#gold-gradient)"/>
-                    <defs>
-                        <linearGradient id="gold-gradient" x1="12" y1="2" x2="12" y2="21">
-                            <stop offset="0%" stop-color="#FCD34D"/>
-                            <stop offset="100%" stop-color="#F59E0B"/>
-                        </linearGradient>
-                    </defs>
-                </svg>
-                <span id="achievementText">¡Comienza tu día!</span>
+        <!-- Level Progress Bar -->
+        <div class="level-progress-bar">
+            <div class="level-info">
+                <span class="xp-text"><span id="currentXP">0</span> / <span id="requiredXP">100</span> XP</span>
             </div>
+            <div class="xp-bar">
+                <div class="xp-fill" id="xpFill" style="width: 0%"></div>
+            </div>
+        </div>
 
-            <div class="water-circle-container">
-                <svg class="water-circle" viewBox="0 0 200 200">
-                    <!-- Background Circle -->
-                    <circle cx="100" cy="100" r="90" fill="url(#circle-bg)"/>
-
-                    <!-- Progress Ring -->
-                    <circle class="progress-ring-bg" cx="100" cy="100" r="85" fill="none" stroke="#E0F2FE" stroke-width="12"/>
-                    <circle class="progress-ring" id="progressRing" cx="100" cy="100" r="85" fill="none" stroke="url(#ring-gradient)" stroke-width="12" stroke-linecap="round"/>
-
-                    <!-- Water Level Animation -->
-                    <defs>
-                        <linearGradient id="circle-bg" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" stop-color="#F0F9FF"/>
-                            <stop offset="100%" stop-color="#E0F2FE"/>
-                        </linearGradient>
-                        <linearGradient id="ring-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#38BDF8"/>
-                            <stop offset="50%" stop-color="#0EA5E9"/>
-                            <stop offset="100%" stop-color="#0284C7"/>
-                        </linearGradient>
-                        <clipPath id="water-clip">
-                            <rect x="0" y="100" width="200" height="100" id="waterLevel"/>
-                        </clipPath>
-                    </defs>
-
-                    <!-- Water Droplet Icon -->
-                    <g class="water-icon">
-                        <path d="M100 60 L110 75 Q115 85 110 95 Q105 105 100 108 Q95 105 90 95 Q85 85 90 75 Z" fill="url(#ring-gradient)" opacity="0.3"/>
-                    </g>
-                </svg>
-
-                <div class="circle-content">
-                    <div class="main-stat">
-                        <span class="stat-value" id="mainStatValue">0</span>
-                        <span class="stat-unit">/ <span id="goalValue">8</span></span>
+        <!-- Views Container -->
+        <div class="views-container">
+            <!-- Home View -->
+            <section class="view active" id="homeView">
+                <!-- Daily Challenge -->
+                <div class="daily-challenge">
+                    <div class="challenge-icon">🏆</div>
+                    <div class="challenge-content">
+                        <h3>Desafío de Hoy</h3>
+                        <p id="dailyChallengeText">Completa tu meta antes de las 8 PM</p>
                     </div>
-                    <div class="stat-description">vasos de agua</div>
-                    <div class="percentage-value" id="percentageValue">0%</div>
+                    <div class="challenge-reward">+50 XP</div>
                 </div>
-            </div>
-        </section>
 
-        <!-- Quick Stats Cards -->
-        <section class="quick-stats">
-            <div class="stat-card-mini">
-                <div class="stat-card-icon">💧</div>
-                <div class="stat-card-content">
-                    <div class="stat-card-value" id="litersValue">0.0 L</div>
-                    <div class="stat-card-label">Total hoy</div>
-                </div>
-            </div>
-            <div class="stat-card-mini">
-                <div class="stat-card-icon">🎯</div>
-                <div class="stat-card-content">
-                    <div class="stat-card-value" id="remainingValue">8</div>
-                    <div class="stat-card-label">Restantes</div>
-                </div>
-            </div>
-            <div class="stat-card-mini">
-                <div class="stat-card-icon">⚡</div>
-                <div class="stat-card-content">
-                    <div class="stat-card-value" id="streakValue">0</div>
-                    <div class="stat-card-label">Racha días</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Action Buttons -->
-        <section class="action-section">
-            <button class="primary-action-btn" id="addWaterBtn">
-                <div class="btn-ripple"></div>
-                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <path d="M12 5v14M5 12h14"/>
-                </svg>
-                <span class="btn-text">Registrar vaso</span>
-                <span class="btn-subtext">250 ml</span>
-            </button>
-
-            <div class="secondary-actions">
-                <button class="secondary-btn" id="quickAdd500">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                    </svg>
-                    <span>500ml</span>
-                </button>
-                <button class="secondary-btn" id="customAmountBtn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="M12 6v6l4 2"/>
-                    </svg>
-                    <span>Custom</span>
-                </button>
-            </div>
-        </section>
-
-        <!-- History Timeline -->
-        <section class="history-section">
-            <div class="section-title">
-                <h3>Historial de hoy</h3>
-                <button class="text-btn" id="clearHistoryBtn">Limpiar</button>
-            </div>
-            <div class="timeline" id="timeline">
-                <div class="empty-state">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M12 2.69L17.66 8.35C20.78 11.47 20.78 16.53 17.66 19.65C14.54 22.77 9.46 22.77 6.34 19.65C3.22 16.53 3.22 11.47 6.34 8.35L12 2.69Z"/>
-                    </svg>
-                    <p>Aún no has registrado agua hoy</p>
-                    <span>¡Comienza ahora para mantenerte hidratado!</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- Settings Panel -->
-        <section class="settings-panel" id="settingsPanel">
-            <div class="panel-header">
-                <h3>Configuración</h3>
-                <button class="close-btn" id="closeSettingsBtn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M18 6L6 18M6 6l12 12"/>
-                    </svg>
-                </button>
-            </div>
-
-            <div class="settings-content">
-                <div class="setting-group">
-                    <label class="setting-label">
-                        <span class="label-text">Meta diaria</span>
-                        <span class="label-description">Vasos por día</span>
-                    </label>
-                    <div class="number-input-group">
-                        <button class="number-btn" data-action="decrease" data-target="dailyGoal">−</button>
-                        <input type="number" id="dailyGoal" value="8" min="1" max="20" readonly>
-                        <button class="number-btn" data-action="increase" data-target="dailyGoal">+</button>
+                <!-- Hero Section -->
+                <div class="hero-section">
+                    <div class="achievement-badge" id="achievementBadge">
+                        <svg class="badge-icon" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="url(#gold-gradient)"/>
+                            <defs>
+                                <linearGradient id="gold-gradient" x1="12" y1="2" x2="12" y2="21">
+                                    <stop offset="0%" stop-color="#FCD34D"/>
+                                    <stop offset="100%" stop-color="#F59E0B"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <span id="achievementText">¡Comienza tu día!</span>
                     </div>
-                </div>
 
-                <div class="setting-group">
-                    <label class="setting-label">
-                        <span class="label-text">Tamaño del vaso</span>
-                        <span class="label-description">Mililitros</span>
-                    </label>
-                    <div class="number-input-group">
-                        <button class="number-btn" data-action="decrease" data-target="glassSize">−</button>
-                        <input type="number" id="glassSize" value="250" min="100" max="1000" step="50" readonly>
-                        <button class="number-btn" data-action="increase" data-target="glassSize">+</button>
-                    </div>
-                </div>
+                    <div class="water-circle-container">
+                        <svg class="water-circle" viewBox="0 0 200 200">
+                            <circle cx="100" cy="100" r="90" fill="url(#circle-bg)"/>
+                            <circle class="progress-ring-bg" cx="100" cy="100" r="85" fill="none" stroke="#E0F2FE" stroke-width="12"/>
+                            <circle class="progress-ring" id="progressRing" cx="100" cy="100" r="85" fill="none" stroke="url(#ring-gradient)" stroke-width="12" stroke-linecap="round"/>
+                            <defs>
+                                <linearGradient id="circle-bg" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="#F0F9FF"/>
+                                    <stop offset="100%" stop-color="#E0F2FE"/>
+                                </linearGradient>
+                                <linearGradient id="ring-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#38BDF8"/>
+                                    <stop offset="50%" stop-color="#0EA5E9"/>
+                                    <stop offset="100%" stop-color="#0284C7"/>
+                                </linearGradient>
+                            </defs>
+                            <g class="water-icon">
+                                <path d="M100 60 L110 75 Q115 85 110 95 Q105 105 100 108 Q95 105 90 95 Q85 85 90 75 Z" fill="url(#ring-gradient)" opacity="0.3"/>
+                            </g>
+                        </svg>
 
-                <div class="setting-group">
-                    <label class="setting-label">
-                        <span class="label-text">Recordatorios</span>
-                        <span class="label-description">Cada cuántos minutos</span>
-                    </label>
-                    <div class="number-input-group">
-                        <button class="number-btn" data-action="decrease" data-target="reminderInterval">−</button>
-                        <input type="number" id="reminderInterval" value="60" min="15" max="240" step="15" readonly>
-                        <button class="number-btn" data-action="increase" data-target="reminderInterval">+</button>
-                    </div>
-                </div>
-
-                <div class="setting-group">
-                    <label class="toggle-label">
-                        <span class="label-text">Notificaciones</span>
-                        <div class="toggle-switch">
-                            <input type="checkbox" id="notificationsEnabled" checked>
-                            <span class="toggle-slider"></span>
+                        <div class="circle-content">
+                            <div class="main-stat">
+                                <span class="stat-value" id="mainStatValue">0</span>
+                                <span class="stat-unit">/ <span id="goalValue">8</span></span>
+                            </div>
+                            <div class="stat-description">vasos de agua</div>
+                            <div class="percentage-value" id="percentageValue">0%</div>
                         </div>
-                    </label>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="quick-stats">
+                    <div class="stat-card-mini">
+                        <div class="stat-card-icon">💧</div>
+                        <div class="stat-card-content">
+                            <div class="stat-card-value" id="litersValue">0.0 L</div>
+                            <div class="stat-card-label">Total hoy</div>
+                        </div>
+                    </div>
+                    <div class="stat-card-mini">
+                        <div class="stat-card-icon">🎯</div>
+                        <div class="stat-card-content">
+                            <div class="stat-card-value" id="remainingValue">8</div>
+                            <div class="stat-card-label">Restantes</div>
+                        </div>
+                    </div>
+                    <div class="stat-card-mini">
+                        <div class="stat-card-icon">⚡</div>
+                        <div class="stat-card-content">
+                            <div class="stat-card-value" id="streakValue">0</div>
+                            <div class="stat-card-label">Racha días</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-section">
+                    <button class="primary-action-btn" id="addWaterBtn">
+                        <div class="btn-ripple"></div>
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M12 5v14M5 12h14"/>
+                        </svg>
+                        <span class="btn-text">Registrar vaso</span>
+                        <span class="btn-subtext">250 ml</span>
+                    </button>
+
+                    <div class="secondary-actions">
+                        <button class="secondary-btn" id="quickAdd500">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                            </svg>
+                            <span>500ml</span>
+                        </button>
+                        <button class="secondary-btn" id="customAmountBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M12 6v6l4 2"/>
+                            </svg>
+                            <span>Custom</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Health Tips -->
+                <div class="health-tip" id="healthTip">
+                    <div class="tip-icon">💡</div>
+                    <div class="tip-content">
+                        <h4>Consejo de Salud</h4>
+                        <p id="tipText">Beber agua al despertar activa tu metabolismo</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stats View -->
+            <section class="view" id="statsView">
+                <div class="view-header">
+                    <h2>📊 Estadísticas</h2>
+                </div>
+
+                <!-- Weekly Chart -->
+                <div class="chart-container">
+                    <h3>Últimos 7 días</h3>
+                    <canvas id="weeklyChart" height="200"></canvas>
+                </div>
+
+                <!-- Monthly Stats -->
+                <div class="monthly-stats">
+                    <h3>Este Mes</h3>
+                    <div class="stat-grid">
+                        <div class="stat-item">
+                            <div class="stat-icon">📅</div>
+                            <div class="stat-data">
+                                <div class="stat-number" id="monthDays">0</div>
+                                <div class="stat-desc">Días completados</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">💧</div>
+                            <div class="stat-data">
+                                <div class="stat-number" id="monthLiters">0</div>
+                                <div class="stat-desc">Litros totales</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">🏆</div>
+                            <div class="stat-data">
+                                <div class="stat-number" id="monthBest">0</div>
+                                <div class="stat-desc">Mejor racha</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">📈</div>
+                            <div class="stat-data">
+                                <div class="stat-number" id="monthAvg">0</div>
+                                <div class="stat-desc">Promedio diario</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- All-Time Stats -->
+                <div class="alltime-stats">
+                    <h3>Historial Total</h3>
+                    <div class="achievement-grid" id="achievementGrid">
+                        <!-- Dynamic achievements -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- History View -->
+            <section class="view" id="historyView">
+                <div class="view-header">
+                    <h2>🕐 Historial</h2>
+                    <div class="header-actions">
+                        <button class="icon-btn-small" id="exportDataBtn" title="Exportar">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                            </svg>
+                        </button>
+                        <button class="icon-btn-small" id="shareBtn" title="Compartir">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="18" cy="5" r="3"/>
+                                <circle cx="6" cy="12" r="3"/>
+                                <circle cx="18" cy="19" r="3"/>
+                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Calendar View -->
+                <div class="calendar-container" id="calendarContainer">
+                    <div class="calendar-header">
+                        <button class="calendar-nav" id="prevMonth">‹</button>
+                        <h3 id="calendarMonth">Mayo 2024</h3>
+                        <button class="calendar-nav" id="nextMonth">›</button>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid">
+                        <!-- Dynamic calendar -->
+                    </div>
+                </div>
+
+                <!-- Today's Timeline -->
+                <div class="timeline-container">
+                    <div class="section-title">
+                        <h3>Hoy</h3>
+                        <button class="text-btn" id="clearHistoryBtn">Limpiar</button>
+                    </div>
+                    <div class="timeline" id="timeline">
+                        <div class="empty-state">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M12 2.69L17.66 8.35C20.78 11.47 20.78 16.53 17.66 19.65C14.54 22.77 9.46 22.77 6.34 19.65C3.22 16.53 3.22 11.47 6.34 8.35L12 2.69Z"/>
+                            </svg>
+                            <p>Aún no has registrado agua hoy</p>
+                            <span>¡Comienza ahora para mantenerte hidratado!</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings View -->
+            <section class="view" id="settingsView">
+                <div class="view-header">
+                    <h2>⚙️ Ajustes</h2>
+                </div>
+
+                <!-- Profile Section -->
+                <div class="settings-group">
+                    <h3>👤 Perfil</h3>
+                    <div class="profile-card">
+                        <div class="profile-avatar" id="profileAvatar">
+                            <span id="avatarInitials">U</span>
+                        </div>
+                        <div class="profile-info">
+                            <input type="text" id="profileName" placeholder="Tu nombre" class="profile-input">
+                            <div class="profile-stats-mini">
+                                <span>Nivel <strong id="profileLevel">1</strong></span>
+                                <span>•</span>
+                                <span><strong id="profileStreak">0</strong> días</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <label>Peso (kg):</label>
+                        <input type="number" id="userWeight" min="30" max="200" value="70">
+                    </div>
+
+                    <div class="setting-item">
+                        <label>Actividad física:</label>
+                        <select id="activityLevel">
+                            <option value="sedentary">Sedentario</option>
+                            <option value="light" selected>Actividad ligera</option>
+                            <option value="moderate">Moderado</option>
+                            <option value="active">Muy activo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- App Settings -->
+                <div class="settings-group">
+                    <h3>🎯 Meta y Medidas</h3>
+
+                    <div class="setting-item">
+                        <label>
+                            <span class="label-text">Meta diaria (vasos)</span>
+                            <span class="label-description">Vasos por día</span>
+                        </label>
+                        <div class="number-input-group">
+                            <button class="number-btn" data-action="decrease" data-target="dailyGoal">−</button>
+                            <input type="number" id="dailyGoal" value="8" min="1" max="20" readonly>
+                            <button class="number-btn" data-action="increase" data-target="dailyGoal">+</button>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <label>
+                            <span class="label-text">Tamaño del vaso (ml)</span>
+                            <span class="label-description">Mililitros</span>
+                        </label>
+                        <div class="number-input-group">
+                            <button class="number-btn" data-action="decrease" data-target="glassSize">−</button>
+                            <input type="number" id="glassSize" value="250" min="100" max="1000" step="50" readonly>
+                            <button class="number-btn" data-action="increase" data-target="glassSize">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notifications -->
+                <div class="settings-group">
+                    <h3>🔔 Notificaciones</h3>
+
+                    <div class="setting-item">
+                        <label class="toggle-label">
+                            <span class="label-text">Activar notificaciones</span>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="notificationsEnabled" checked>
+                                <span class="toggle-slider"></span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <label>
+                            <span class="label-text">Intervalo (minutos)</span>
+                            <span class="label-description">Frecuencia de recordatorios</span>
+                        </label>
+                        <div class="number-input-group">
+                            <button class="number-btn" data-action="decrease" data-target="reminderInterval">−</button>
+                            <input type="number" id="reminderInterval" value="60" min="15" max="240" step="15" readonly>
+                            <button class="number-btn" data-action="increase" data-target="reminderInterval">+</button>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <label class="toggle-label">
+                            <span class="label-text">Sonidos</span>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="soundEnabled" checked>
+                                <span class="toggle-slider"></span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <label class="toggle-label">
+                            <span class="label-text">Vibración (móvil)</span>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="vibrationEnabled" checked>
+                                <span class="toggle-slider"></span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Data Management -->
+                <div class="settings-group">
+                    <h3>💾 Datos</h3>
+
+                    <button class="settings-action-btn" id="exportAllDataBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                        </svg>
+                        Exportar todos los datos
+                    </button>
+
+                    <button class="settings-action-btn" id="importDataBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                        </svg>
+                        Importar datos
+                    </button>
+                    <input type="file" id="importFileInput" accept=".json" style="display: none;">
+
+                    <button class="settings-action-btn danger" id="resetAllDataBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"/>
+                            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                        </svg>
+                        Borrar todos los datos
+                    </button>
+                </div>
+
+                <!-- About -->
+                <div class="settings-group">
+                    <h3>ℹ️ Acerca de</h3>
+                    <div class="about-info">
+                        <p><strong>Hidratador Pro</strong> v2.0</p>
+                        <p>La aplicación más completa para tu hidratación</p>
+                        <p class="version-info">Desarrollado con 💙 por Claude Code</p>
+                    </div>
                 </div>
 
                 <button class="save-settings-btn" id="saveSettingsBtn">
@@ -249,10 +557,10 @@
                         <polyline points="17 21 17 13 7 13 7 21"/>
                         <polyline points="7 3 7 8 15 8"/>
                     </svg>
-                    Guardar cambios
+                    Guardar Cambios
                 </button>
-            </div>
-        </section>
+            </section>
+        </div>
 
         <!-- Bottom Navigation -->
         <nav class="bottom-nav">
@@ -262,6 +570,14 @@
                 </svg>
                 <span>Inicio</span>
             </button>
+            <button class="nav-btn" data-view="stats">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="20" x2="18" y2="10"/>
+                    <line x1="12" y1="20" x2="12" y2="4"/>
+                    <line x1="6" y1="20" x2="6" y2="14"/>
+                </svg>
+                <span>Estadísticas</span>
+            </button>
             <button class="nav-btn" data-view="history">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="10"/>
@@ -269,7 +585,7 @@
                 </svg>
                 <span>Historial</span>
             </button>
-            <button class="nav-btn" data-view="settings" id="settingsNavBtn">
+            <button class="nav-btn" data-view="settings">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="3"/>
                     <path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m5.08 5.08l4.24 4.24M1 12h6m6 0h6M4.22 19.78l4.24-4.24m5.08-5.08l4.24-4.24"/>
@@ -311,6 +627,27 @@
 
     <!-- Toast Notifications -->
     <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Level Up Animation -->
+    <div class="levelup-overlay" id="levelUpOverlay">
+        <div class="levelup-content">
+            <div class="levelup-badge">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="url(#levelup-gradient)"/>
+                    <defs>
+                        <linearGradient id="levelup-gradient" x1="12" y1="2" x2="12" y2="21">
+                            <stop offset="0%" stop-color="#FCD34D"/>
+                            <stop offset="100%" stop-color="#F59E0B"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <h2>¡Nivel Alcanzado!</h2>
+            <div class="levelup-number" id="levelUpNumber">2</div>
+            <p>Sigue así, ¡vas increíble!</p>
+            <button class="levelup-btn" id="closeLevelUpBtn">Continuar</button>
+        </div>
+    </div>
 
     <script src="app.js"></script>
 </body>
