@@ -82,10 +82,10 @@ class HidratadorApp {
         this.elements.enableNotificationsBtn = document.getElementById('enableNotificationsBtn');
 
         // Main elements
-        this.elements.waterCountDisplay = document.getElementById('waterCountDisplay');
-        this.elements.progressFill = document.getElementById('progressFill');
-        this.elements.progressPercentage = document.getElementById('progressPercentage');
-        this.elements.dailyGoalDisplay = document.getElementById('dailyGoalDisplay');
+        this.elements.mainStatValue = document.getElementById('mainStatValue');
+        this.elements.goalValue = document.getElementById('goalValue');
+        this.elements.percentageValue = document.getElementById('percentageValue');
+        this.elements.progressRing = document.getElementById('progressRing');
 
         // Buttons
         this.elements.addWaterBtn = document.getElementById('addWaterBtn');
@@ -106,6 +106,16 @@ class HidratadorApp {
         // Dark mode toggle
         this.elements.darkModeToggle?.addEventListener('click', () => {
             this.toggleDarkMode();
+        });
+
+        // Profile button
+        const profileBtn = document.getElementById('profileBtn');
+        profileBtn?.addEventListener('click', () => {
+            this.switchView('settings');
+            // Update nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.view === 'settings');
+            });
         });
 
         // Add water button
@@ -409,27 +419,75 @@ class HidratadorApp {
         this.updateProgress();
         this.updateHistory();
         this.updateLevelUI();
+        this.updateAchievementBadge();
+        this.updateQuickStats();
+    }
+
+    updateAchievementBadge() {
+        const achievementText = document.getElementById('achievementText');
+        if (!achievementText) return;
+
+        const percentage = (this.waterCount / this.settings.dailyGoal) * 100;
+
+        let text = '¡Comienza tu día!';
+        if (percentage >= 100) {
+            text = '🎉 ¡Meta completada!';
+        } else if (percentage >= 75) {
+            text = '💪 ¡Casi allí!';
+        } else if (percentage >= 50) {
+            text = '👍 ¡Buen progreso!';
+        } else if (percentage >= 25) {
+            text = '⭐ ¡Sigue así!';
+        } else if (percentage > 0) {
+            text = '🚀 ¡Gran comienzo!';
+        }
+
+        achievementText.textContent = text;
+    }
+
+    updateQuickStats() {
+        // Liters
+        const litersValue = document.getElementById('litersValue');
+        if (litersValue) {
+            const liters = (this.waterCount * this.settings.glassSize) / 1000;
+            litersValue.textContent = liters.toFixed(1) + ' L';
+        }
+
+        // Remaining
+        const remainingValue = document.getElementById('remainingValue');
+        if (remainingValue) {
+            const remaining = Math.max(0, this.settings.dailyGoal - this.waterCount);
+            remainingValue.textContent = Math.ceil(remaining);
+        }
+
+        // Streak
+        const streakValue = document.getElementById('streakValue');
+        if (streakValue) {
+            streakValue.textContent = this.streak;
+        }
     }
 
     updateWaterDisplay() {
-        if (this.elements.waterCountDisplay) {
-            this.elements.waterCountDisplay.textContent = this.waterCount.toFixed(1);
+        if (this.elements.mainStatValue) {
+            this.elements.mainStatValue.textContent = this.waterCount.toFixed(1);
         }
 
-        if (this.elements.dailyGoalDisplay) {
-            this.elements.dailyGoalDisplay.textContent = this.settings.dailyGoal;
+        if (this.elements.goalValue) {
+            this.elements.goalValue.textContent = this.settings.dailyGoal;
         }
     }
 
     updateProgress() {
         const percentage = Math.min((this.waterCount / this.settings.dailyGoal) * 100, 100);
 
-        if (this.elements.progressFill) {
-            this.elements.progressFill.style.width = `${percentage}%`;
+        if (this.elements.progressRing) {
+            const circumference = 534; // 2 * π * radius (85)
+            const offset = circumference - (percentage / 100) * circumference;
+            this.elements.progressRing.style.strokeDashoffset = offset;
         }
 
-        if (this.elements.progressPercentage) {
-            this.elements.progressPercentage.textContent = `${Math.round(percentage)}%`;
+        if (this.elements.percentageValue) {
+            this.elements.percentageValue.textContent = `${Math.round(percentage)}%`;
         }
     }
 
