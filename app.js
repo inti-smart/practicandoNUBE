@@ -51,6 +51,13 @@ class HidratadorApp {
         // Reminder interval
         this.reminderTimerId = null;
 
+        // BUSINESS FEATURES - Premium
+        this.lastCheckIn = null;
+        this.checkInStreak = 0;
+        this.dailyTip = null;
+        this.streakFreezes = 3; // Permitir 3 "freeze" de racha
+        this.personalizedGoal = null;
+
         // UI Elements Cache
         this.elements = {};
 
@@ -85,9 +92,14 @@ class HidratadorApp {
             this.renderCalendar();
             this.renderAchievements();
             this.updateMonthlyStats();
+
+            // BUSINESS FEATURES
+            this.checkDailyCheckIn();
+            this.generateDailyTip();
+            this.calculatePersonalizedGoal();
         }
 
-        console.log('✅ App initialized');
+        console.log('✅ App initialized - Premium Business Edition');
     }
 
     cacheElements() {
@@ -687,6 +699,190 @@ class HidratadorApp {
     }
 
     // ============================================
+    // BUSINESS FEATURES - Premium
+    // ============================================
+
+    checkDailyCheckIn() {
+        const today = new Date().toDateString();
+
+        if (this.lastCheckIn !== today) {
+            // First check-in of the day
+            const yesterday = new Date(Date.now() - 86400000).toDateString();
+
+            if (this.lastCheckIn === yesterday) {
+                // Consecutive day
+                this.checkInStreak++;
+            } else if (this.lastCheckIn !== null) {
+                // Missed a day - check if can use freeze
+                if (this.streakFreezes > 0) {
+                    this.showToast('🧊 ¡Racha congelada! Streak salvado');
+                    this.streakFreezes--;
+                } else {
+                    this.checkInStreak = 1;
+                    this.showToast('Racha reiniciada - ¡Empieza de nuevo!');
+                }
+            } else {
+                this.checkInStreak = 1;
+            }
+
+            this.lastCheckIn = today;
+
+            // Give daily check-in bonus
+            const bonusXP = 20 + (this.checkInStreak * 5);
+            this.addXP(bonusXP);
+            this.showToast(`✅ Check-in diario! +${bonusXP} XP 🎁`);
+
+            // Extra reward for milestones
+            if (this.checkInStreak === 7) {
+                this.showToast('🎉 ¡7 días seguidos! +100 XP bonus!');
+                this.addXP(100);
+            } else if (this.checkInStreak === 30) {
+                this.showToast('👑 ¡30 días seguidos! +500 XP bonus!');
+                this.addXP(500);
+            } else if (this.checkInStreak === 100) {
+                this.showToast('🏆 ¡100 días seguidos! +1000 XP bonus!');
+                this.addXP(1000);
+            }
+
+            this.saveToStorage();
+        }
+    }
+
+    generateDailyTip() {
+        const tips = [
+            {
+                title: '💡 Hidratación matutina',
+                text: 'Bebe agua al despertar. Tu cuerpo perdió líquidos durante la noche.'
+            },
+            {
+                title: '🏃 Antes del ejercicio',
+                text: 'Hidrátate 30 minutos antes de hacer ejercicio para mejor rendimiento.'
+            },
+            {
+                title: '🍽️ Con las comidas',
+                text: 'Beber agua con las comidas ayuda a la digestión.'
+            },
+            {
+                title: '🧠 Concentración',
+                text: 'La deshidratación reduce la concentración hasta un 20%.'
+            },
+            {
+                title: '☀️ Clima cálido',
+                text: 'En días calurosos, aumenta tu consumo de agua un 50%.'
+            },
+            {
+                title: '💪 Después del ejercicio',
+                text: 'Repone el 150% del líquido perdido después de entrenar.'
+            },
+            {
+                title: '😴 Mejor sueño',
+                text: 'Beber agua durante el día mejora la calidad del sueño.'
+            },
+            {
+                title: '🎯 Temperatura ideal',
+                text: 'El agua a temperatura ambiente se absorbe más rápido.'
+            },
+            {
+                title: '🌡️ Señales de sed',
+                text: 'La sed es una señal tardía. Hidratate antes de sentirla.'
+            },
+            {
+                title: '⚡ Energía natural',
+                text: 'La fatiga suele ser síntoma de deshidratación.'
+            },
+            {
+                title: '🥗 Frutas y verduras',
+                text: 'Consume alimentos ricos en agua como sandía y pepino.'
+            },
+            {
+                title: '📱 Recordatorios',
+                text: 'Configura alarmas cada 2 horas para beber agua.'
+            }
+        ];
+
+        const today = new Date().toDateString();
+        const savedDate = localStorage.getItem('tip_date');
+
+        if (savedDate !== today) {
+            const randomIndex = Math.floor(Math.random() * tips.length);
+            this.dailyTip = tips[randomIndex];
+            localStorage.setItem('tip_date', today);
+            localStorage.setItem('tip_data', JSON.stringify(this.dailyTip));
+        } else {
+            const saved = localStorage.getItem('tip_data');
+            this.dailyTip = saved ? JSON.parse(saved) : tips[0];
+        }
+
+        // Show tip in UI if element exists
+        const tipElement = document.getElementById('dailyTip');
+        if (tipElement) {
+            tipElement.innerHTML = `
+                <strong>${this.dailyTip.title}</strong><br>
+                <span>${this.dailyTip.text}</span>
+            `;
+        }
+    }
+
+    calculatePersonalizedGoal() {
+        // Fórmula científica basada en peso y actividad
+        const baseHydration = this.settings.weight * 35; // ml por kg de peso
+
+        // Ajuste por nivel de actividad
+        const activityMultiplier = {
+            'sedentary': 1.0,
+            'light': 1.2,
+            'moderate': 1.4,
+            'active': 1.6,
+            'very_active': 1.8
+        };
+
+        const multiplier = activityMultiplier[this.settings.activity] || 1.2;
+        const totalMl = Math.round(baseHydration * multiplier);
+
+        // Convert to glasses
+        this.personalizedGoal = Math.ceil(totalMl / this.settings.glassSize);
+
+        // Show recommendation
+        const recommendationEl = document.getElementById('personalizedRecommendation');
+        if (recommendationEl) {
+            recommendationEl.innerHTML = `
+                <div class="personalized-goal-card">
+                    <div class="goal-icon">🎯</div>
+                    <div class="goal-content">
+                        <h4>Tu meta personalizada</h4>
+                        <p class="goal-amount">${this.personalizedGoal} vasos (${(totalMl/1000).toFixed(1)}L)</p>
+                        <p class="goal-desc">Basado en tu peso (${this.settings.weight}kg) y actividad</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        return this.personalizedGoal;
+    }
+
+    getSmartReminder() {
+        const hour = new Date().getHours();
+
+        let message = '💧 ¡Es hora de hidratarte!';
+
+        if (hour >= 6 && hour < 9) {
+            message = '🌅 Buenos días! Empieza tu día con agua';
+        } else if (hour >= 9 && hour < 12) {
+            message = '☕ Media mañana - ¡Un vaso de agua!';
+        } else if (hour >= 12 && hour < 15) {
+            message = '🍽️ Hora de almuerzo - ¡No olvides el agua!';
+        } else if (hour >= 15 && hour < 18) {
+            message = '⚡ Tarde activa - ¡Hidrátate ahora!';
+        } else if (hour >= 18 && hour < 21) {
+            message = '🌆 Atardecer - Bebe agua antes de la cena';
+        } else if (hour >= 21 && hour < 23) {
+            message = '🌙 Antes de dormir - Último vaso del día';
+        }
+
+        return message;
+    }
+
+    // ============================================
     // CALENDAR
     // ============================================
 
@@ -1225,21 +1421,16 @@ class HidratadorApp {
 
         if (percentage >= 100) return; // No reminder if goal completed
 
-        const messages = [
-            '💧 ¡Es hora de hidratarte!',
-            '🌊 No olvides beber agua',
-            '⏰ Recordatorio: Bebe un vaso de agua',
-            '💪 ¡Mantente hidratado!',
-            '✨ Tu cuerpo necesita agua'
-        ];
+        // Use smart context-aware reminder
+        const message = this.getSmartReminder();
 
-        const message = messages[Math.floor(Math.random() * messages.length)];
-
-        new Notification('Hidratador Pro', {
+        new Notification('Hidratador Ultra Pro', {
             body: message,
             icon: '/icon-192.png',
             badge: '/icon-192.png',
-            vibrate: this.settings.vibrationEnabled ? [200, 100, 200] : undefined
+            vibrate: this.settings.vibrationEnabled ? [200, 100, 200] : undefined,
+            tag: 'hydration-reminder',
+            requireInteraction: false
         });
     }
 
@@ -1349,6 +1540,15 @@ class HidratadorApp {
             // Challenge
             const challengeComplete = localStorage.getItem('challenge_complete');
             this.challengeCompleted = challengeComplete === 'true';
+
+            // BUSINESS FEATURES - Premium
+            const businessData = localStorage.getItem('business_data');
+            if (businessData) {
+                const parsed = JSON.parse(businessData);
+                this.lastCheckIn = parsed.lastCheckIn || null;
+                this.checkInStreak = parsed.checkInStreak || 0;
+                this.streakFreezes = parsed.streakFreezes !== undefined ? parsed.streakFreezes : 3;
+            }
         } catch (error) {
             console.error('Error loading from storage:', error);
         }
@@ -1379,6 +1579,14 @@ class HidratadorApp {
             localStorage.setItem('game_data', JSON.stringify(gameData));
 
             localStorage.setItem('challenge_complete', this.challengeCompleted.toString());
+
+            // BUSINESS FEATURES - Premium
+            const businessData = {
+                lastCheckIn: this.lastCheckIn,
+                checkInStreak: this.checkInStreak,
+                streakFreezes: this.streakFreezes
+            };
+            localStorage.setItem('business_data', JSON.stringify(businessData));
         } catch (error) {
             console.error('Error saving to storage:', error);
             if (error.name === 'QuotaExceededError') {
