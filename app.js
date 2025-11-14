@@ -1,10 +1,15 @@
 // ============================================
-//  HIDRATADOR ULTRA PRO v4.0 - COMPLETO
-//  Aplicación Robusta y Dinámica
+//  HIDRATADOR ULTRA PRO v6.0 - EMPRESARIAL COMPLETO
+//  Multi-usuario, PWA, Gráficos, Foto perfil
 // ============================================
 
 class HidratadorApp {
     constructor() {
+        // MULTI-USER SYSTEM
+        this.currentUser = null;
+        this.users = [];
+        this.isLoggedIn = false;
+
         // Core Settings
         this.settings = {
             dailyGoal: 8,
@@ -58,6 +63,11 @@ class HidratadorApp {
         this.streakFreezes = 3; // Permitir 3 "freeze" de racha
         this.personalizedGoal = null;
 
+        // PROFILE FEATURES
+        this.profilePhoto = null; // base64 image
+        this.weeklyData = []; // Para gráficos
+        this.monthlyData = []; // Para gráficos
+
         // UI Elements Cache
         this.elements = {};
 
@@ -73,9 +83,14 @@ class HidratadorApp {
     // ============================================
 
     init() {
-        console.log('🚀 Hidratador Ultra Pro - Starting...');
+        console.log('🚀 Hidratador Ultra Pro v6.0 - Empresarial Completo');
 
         this.cacheElements();
+
+        // MULTI-USER: Load users first
+        this.loadUsers();
+
+        // Load storage (user-specific if logged in)
         this.loadFromStorage();
 
         // Check onboarding
@@ -97,9 +112,18 @@ class HidratadorApp {
             this.checkDailyCheckIn();
             this.generateDailyTip();
             this.calculatePersonalizedGoal();
+
+            // PROFILE & CHARTS - v6.0
+            this.setupPhotoUpload();
+            this.updateProfilePhoto();
+
+            // Weekly chart if canvas exists
+            if (document.getElementById('weeklyChart')) {
+                this.renderWeeklyChart();
+            }
         }
 
-        console.log('✅ App initialized - Premium Business Edition');
+        console.log('✅ App initialized - v6.0 Empresarial Completo');
     }
 
     cacheElements() {
@@ -1587,6 +1611,11 @@ class HidratadorApp {
                 streakFreezes: this.streakFreezes
             };
             localStorage.setItem('business_data', JSON.stringify(businessData));
+
+            // MULTI-USER: Save current user data if logged in
+            if (this.isLoggedIn && this.currentUser) {
+                this.saveCurrentUserData();
+            }
         } catch (error) {
             console.error('Error saving to storage:', error);
             if (error.name === 'QuotaExceededError') {
@@ -1661,6 +1690,228 @@ class HidratadorApp {
             this.startDailyCheck();
         }, msUntilMidnight);
     }
+
+    // ============================================
+    // MULTI-USER SYSTEM - Empresarial
+    // ============================================
+
+    loadUsers() {
+        try {
+            const usersData = localStorage.getItem('hidratador_users');
+            if (usersData) {
+                this.users = JSON.parse(usersData);
+            }
+
+            const currentUserId = localStorage.getItem('current_user_id');
+            if (currentUserId) {
+                this.currentUser = this.users.find(u => u.id === currentUserId);
+                this.isLoggedIn = !!this.currentUser;
+            }
+        } catch (error) {
+            console.error('Error loading users:', error);
+        }
+    }
+
+    createUser(name, email) {
+        const newUser = {
+            id: 'user_' + Date.now(),
+            name: name || 'Usuario',
+            email: email || '',
+            createdAt: new Date().toISOString(),
+            profilePhoto: null,
+            settings: { ...this.settings },
+            data: {}
+        };
+
+        this.users.push(newUser);
+        this.saveUsers();
+        return newUser;
+    }
+
+    loginUser(userId) {
+        const user = this.users.find(u => u.id === userId);
+        if (user) {
+            this.currentUser = user;
+            this.isLoggedIn = true;
+            localStorage.setItem('current_user_id', userId);
+
+            // Load user data
+            if (user.data) {
+                Object.assign(this, user.data);
+            }
+            if (user.settings) {
+                this.settings = { ...this.settings, ...user.settings };
+            }
+            if (user.profilePhoto) {
+                this.profilePhoto = user.profilePhoto;
+            }
+
+            this.updateAllUI();
+            this.showToast(`✅ Bienvenido ${user.name}!`);
+        }
+    }
+
+    logoutUser() {
+        this.saveCurrentUserData();
+        this.currentUser = null;
+        this.isLoggedIn = false;
+        localStorage.removeItem('current_user_id');
+        this.showToast('👋 Sesión cerrada');
+    }
+
+    saveUsers() {
+        try {
+            localStorage.setItem('hidratador_users', JSON.stringify(this.users));
+        } catch (error) {
+            console.error('Error saving users:', error);
+        }
+    }
+
+    saveCurrentUserData() {
+        if (!this.currentUser) return;
+
+        const userIndex = this.users.findIndex(u => u.id === this.currentUser.id);
+        if (userIndex !== -1) {
+            this.users[userIndex].data = {
+                waterCount: this.waterCount,
+                history: this.history,
+                allTimeHistory: this.allTimeHistory,
+                streak: this.streak,
+                bestStreak: this.bestStreak,
+                level: this.level,
+                xp: this.xp,
+                totalLifetimeWater: this.totalLifetimeWater,
+                unlockedAchievements: this.unlockedAchievements,
+                lastCheckIn: this.lastCheckIn,
+                checkInStreak: this.checkInStreak,
+                streakFreezes: this.streakFreezes
+            };
+            this.users[userIndex].settings = { ...this.settings };
+            this.users[userIndex].profilePhoto = this.profilePhoto;
+
+            this.saveUsers();
+        }
+    }
+
+    // ============================================
+    // PROFILE PHOTO - Upload
+    // ============================================
+
+    uploadProfilePhoto(file) {
+        if (!file || !file.type.startsWith('image/')) {
+            this.showToast('❌ Por favor selecciona una imagen');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            this.profilePhoto = e.target.result;
+            this.updateProfilePhoto();
+            this.saveCurrentUserData();
+            this.showToast('✅ Foto actualizada');
+        };
+        reader.readAsDataURL(file);
+    }
+
+    updateProfilePhoto() {
+        const avatarElements = document.querySelectorAll('.profile-avatar');
+        avatarElements.forEach(avatar => {
+            if (this.profilePhoto) {
+                avatar.innerHTML = `<img src="${this.profilePhoto}" alt="Profile">`;
+            } else {
+                const initial = this.settings.userName.charAt(0).toUpperCase();
+                avatar.innerHTML = initial;
+            }
+        });
+    }
+
+    setupPhotoUpload() {
+        // Create hidden file input
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.style.display = 'none';
+        document.body.appendChild(fileInput);
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                this.uploadProfilePhoto(e.target.files[0]);
+            }
+        });
+
+        // Add click handler to avatars
+        document.querySelectorAll('.profile-avatar').forEach(avatar => {
+            avatar.addEventListener('click', () => {
+                fileInput.click();
+            });
+        });
+    }
+
+    // ============================================
+    // WEEKLY CHART - Gráficos
+    // ============================================
+
+    generateWeeklyData() {
+        const weekData = [];
+        const today = new Date();
+
+        for (let i = 6; i >= 0; i--) {
+            const date = new Date(today);
+            date.setDate(date.getDate() - i);
+            const dateStr = date.toDateString();
+
+            const dayHistory = this.allTimeHistory.filter(entry =>
+                new Date(entry.date).toDateString() === dateStr
+            );
+
+            const totalMl = dayHistory.reduce((sum, entry) => sum + entry.amount, 0);
+            const glasses = totalMl / this.settings.glassSize;
+
+            weekData.push({
+                date: date.toLocaleDateString('es-ES', { weekday: 'short' }),
+                glasses: glasses,
+                percentage: Math.min((glasses / this.settings.dailyGoal) * 100, 100)
+            });
+        }
+
+        return weekData;
+    }
+
+    renderWeeklyChart() {
+        const canvas = document.getElementById('weeklyChart');
+        if (!canvas) return;
+
+        const weekData = this.generateWeeklyData();
+        const ctx = canvas.getContext('2d');
+
+        // Simple bar chart implementation
+        const width = canvas.width;
+        const height = canvas.height;
+        const barWidth = width / 7 - 10;
+        const maxHeight = height - 40;
+
+        ctx.clearRect(0, 0, width, height);
+
+        weekData.forEach((day, index) => {
+            const barHeight = (day.percentage / 100) * maxHeight;
+            const x = index * (barWidth + 10) + 5;
+            const y = height - barHeight - 20;
+
+            // Draw bar
+            const gradient = ctx.createLinearGradient(0, y, 0, height - 20);
+            gradient.addColorStop(0, '#14B8A6');
+            gradient.addColorStop(1, '#0D9488');
+
+            ctx.fillStyle = gradient;
+            ctx.fillRect(x, y, barWidth, barHeight);
+
+            // Draw label
+            ctx.fillStyle = '#78716C';
+            ctx.font = '12px Inter';
+            ctx.textAlign = 'center';
+            ctx.fillText(day.date, x + barWidth / 2, height - 5);
+        });
+    }
 }
 
 // ============================================
@@ -1672,6 +1923,17 @@ let app;
 document.addEventListener('DOMContentLoaded', () => {
     app = new HidratadorApp();
     window.app = app;
+
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+                console.log('✅ Service Worker registered:', registration.scope);
+            })
+            .catch((error) => {
+                console.error('❌ Service Worker registration failed:', error);
+            });
+    }
 });
 
 // ============================================
