@@ -1,6 +1,6 @@
 // ============================================
-//  HIDRATADOR PRO - Fixed & Simplified v3.1
-//  Compatible with existing HTML structure
+//  HIDRATADOR ULTRA PRO v4.0 - COMPLETO
+//  Aplicación Robusta y Dinámica
 // ============================================
 
 class HidratadorApp {
@@ -22,13 +22,17 @@ class HidratadorApp {
         // App State
         this.waterCount = 0;
         this.history = [];
+        this.allTimeHistory = []; // Para estadísticas y calendario
         this.streak = 0;
         this.lastDrinkDate = null;
+        this.bestStreak = 0;
 
         // Gamification
         this.level = 1;
         this.xp = 0;
         this.totalLifetimeWater = 0;
+        this.achievements = [];
+        this.unlockedAchievements = [];
 
         // Onboarding
         this.currentOnboardingStep = 1;
@@ -36,12 +40,22 @@ class HidratadorApp {
 
         // Daily Challenge
         this.dailyChallenge = null;
+        this.challengeCompleted = false;
 
         // Current View
         this.currentView = 'home';
 
+        // Calendar
+        this.currentMonth = new Date();
+
+        // Reminder interval
+        this.reminderTimerId = null;
+
         // UI Elements Cache
         this.elements = {};
+
+        // Define achievements
+        this.defineAchievements();
 
         // Initialize
         this.init();
@@ -52,7 +66,7 @@ class HidratadorApp {
     // ============================================
 
     init() {
-        console.log('🚀 Hidratador Pro - Starting...');
+        console.log('🚀 Hidratador Ultra Pro - Starting...');
 
         this.cacheElements();
         this.loadFromStorage();
@@ -67,6 +81,10 @@ class HidratadorApp {
             this.startDailyCheck();
             this.generateDailyChallenge();
             this.applyDarkMode();
+            this.startReminders();
+            this.renderCalendar();
+            this.renderAchievements();
+            this.updateMonthlyStats();
         }
 
         console.log('✅ App initialized');
@@ -92,6 +110,13 @@ class HidratadorApp {
         this.elements.quickAdd500 = document.getElementById('quickAdd500');
         this.elements.customAmountBtn = document.getElementById('customAmountBtn');
 
+        // Modal
+        this.elements.customModal = document.getElementById('customModal');
+        this.elements.customAmount = document.getElementById('customAmount');
+        this.elements.closeModalBtn = document.getElementById('closeModalBtn');
+        this.elements.cancelCustomBtn = document.getElementById('cancelCustomBtn');
+        this.elements.confirmCustomBtn = document.getElementById('confirmCustomBtn');
+
         // Other
         this.elements.darkModeToggle = document.getElementById('darkModeToggle');
         this.elements.userLevel = document.getElementById('userLevel');
@@ -99,7 +124,35 @@ class HidratadorApp {
         this.elements.currentXP = document.getElementById('currentXP');
         this.elements.requiredXP = document.getElementById('requiredXP');
         this.elements.dailyChallengeText = document.getElementById('dailyChallengeText');
-        this.elements.historyList = document.getElementById('historyList');
+        this.elements.timeline = document.getElementById('timeline');
+
+        // Calendar
+        this.elements.calendarMonth = document.getElementById('calendarMonth');
+        this.elements.calendarGrid = document.getElementById('calendarGrid');
+        this.elements.prevMonth = document.getElementById('prevMonth');
+        this.elements.nextMonth = document.getElementById('nextMonth');
+
+        // Stats
+        this.elements.achievementGrid = document.getElementById('achievementGrid');
+
+        // Settings
+        this.elements.profileName = document.getElementById('profileName');
+        this.elements.userWeight = document.getElementById('userWeight');
+        this.elements.activityLevel = document.getElementById('activityLevel');
+        this.elements.dailyGoalInput = document.getElementById('dailyGoalInput');
+        this.elements.glassSizeInput = document.getElementById('glassSizeInput');
+        this.elements.reminderIntervalInput = document.getElementById('reminderIntervalInput');
+        this.elements.notificationsEnabled = document.getElementById('notificationsEnabled');
+        this.elements.soundEnabled = document.getElementById('soundEnabled');
+        this.elements.vibrationEnabled = document.getElementById('vibrationEnabled');
+        this.elements.saveSettingsBtn = document.getElementById('saveSettingsBtn');
+        this.elements.exportAllDataBtn = document.getElementById('exportAllDataBtn');
+        this.elements.importDataBtn = document.getElementById('importDataBtn');
+        this.elements.importFileInput = document.getElementById('importFileInput');
+        this.elements.resetAllDataBtn = document.getElementById('resetAllDataBtn');
+        this.elements.exportDataBtn = document.getElementById('exportDataBtn');
+        this.elements.shareBtn = document.getElementById('shareBtn');
+        this.elements.clearHistoryBtn = document.getElementById('clearHistoryBtn');
     }
 
     setupEventListeners() {
@@ -112,7 +165,6 @@ class HidratadorApp {
         const profileBtn = document.getElementById('profileBtn');
         profileBtn?.addEventListener('click', () => {
             this.switchView('settings');
-            // Update nav items
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.toggle('active', item.dataset.view === 'settings');
             });
@@ -128,11 +180,105 @@ class HidratadorApp {
             this.addWater(500);
         });
 
-        // Custom amount
+        // Custom amount - open modal
         this.elements.customAmountBtn?.addEventListener('click', () => {
-            const amount = prompt('¿Cuántos ml deseas agregar?', '250');
-            if (amount && !isNaN(amount)) {
-                this.addWater(parseInt(amount));
+            this.openCustomModal();
+        });
+
+        // Modal controls
+        this.elements.closeModalBtn?.addEventListener('click', () => {
+            this.closeCustomModal();
+        });
+
+        this.elements.cancelCustomBtn?.addEventListener('click', () => {
+            this.closeCustomModal();
+        });
+
+        this.elements.confirmCustomBtn?.addEventListener('click', () => {
+            const amount = parseInt(this.elements.customAmount.value);
+            if (amount && amount >= 50 && amount <= 2000) {
+                this.addWater(amount);
+                this.closeCustomModal();
+            } else {
+                this.showToast('❌ Cantidad inválida (50-2000ml)');
+            }
+        });
+
+        // Quick amount buttons in modal
+        document.querySelectorAll('.quick-amount-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const amount = parseInt(btn.dataset.amount);
+                this.elements.customAmount.value = amount;
+            });
+        });
+
+        // Calendar navigation
+        this.elements.prevMonth?.addEventListener('click', () => {
+            this.currentMonth.setMonth(this.currentMonth.getMonth() - 1);
+            this.renderCalendar();
+        });
+
+        this.elements.nextMonth?.addEventListener('click', () => {
+            this.currentMonth.setMonth(this.currentMonth.getMonth() + 1);
+            this.renderCalendar();
+        });
+
+        // Settings - Number buttons with delegation
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest('.number-btn');
+            if (!btn) return;
+
+            const action = btn.dataset.action;
+            const target = btn.dataset.target;
+
+            if (action === 'increment') {
+                this.incrementSetting(target);
+            } else if (action === 'decrement') {
+                this.decrementSetting(target);
+            }
+        });
+
+        // Save settings
+        this.elements.saveSettingsBtn?.addEventListener('click', () => {
+            this.saveSettings();
+        });
+
+        // Export/Import/Reset
+        this.elements.exportAllDataBtn?.addEventListener('click', () => {
+            this.exportData('json');
+        });
+
+        this.elements.exportDataBtn?.addEventListener('click', () => {
+            this.exportData('csv');
+        });
+
+        this.elements.importDataBtn?.addEventListener('click', () => {
+            this.elements.importFileInput?.click();
+        });
+
+        this.elements.importFileInput?.addEventListener('change', (e) => {
+            this.importData(e.target.files[0]);
+        });
+
+        this.elements.resetAllDataBtn?.addEventListener('click', () => {
+            if (confirm('⚠️ ¿Estás seguro? Esto borrará TODOS tus datos de forma permanente.')) {
+                this.resetAllData();
+            }
+        });
+
+        // Share button
+        this.elements.shareBtn?.addEventListener('click', () => {
+            this.shareProgress();
+        });
+
+        // Clear history
+        this.elements.clearHistoryBtn?.addEventListener('click', () => {
+            if (confirm('¿Limpiar historial completo?')) {
+                this.allTimeHistory = [];
+                this.saveToStorage();
+                this.renderCalendar();
+                this.updateMonthlyStats();
+                this.showToast('Historial limpiado');
             }
         });
 
@@ -141,8 +287,39 @@ class HidratadorApp {
             item.addEventListener('click', () => {
                 const view = item.dataset.view;
                 this.switchView(view);
+
+                // Update stats when switching to stats view
+                if (view === 'stats') {
+                    this.updateMonthlyStats();
+                    this.renderAchievements();
+                }
+
+                // Update calendar when switching to history
+                if (view === 'history') {
+                    this.renderCalendar();
+                    this.updateTimeline();
+                }
             });
         });
+    }
+
+    // ============================================
+    // MODAL
+    // ============================================
+
+    openCustomModal() {
+        if (this.elements.customModal) {
+            this.elements.customModal.classList.add('active');
+            this.elements.customAmount.value = this.settings.glassSize;
+            this.elements.customAmount.focus();
+        }
+    }
+
+    closeCustomModal() {
+        if (this.elements.customModal) {
+            this.elements.customModal.classList.remove('active');
+            this.elements.customAmount.value = '';
+        }
     }
 
     // ============================================
@@ -252,7 +429,10 @@ class HidratadorApp {
         this.updateAllUI();
         this.startDailyCheck();
         this.generateDailyChallenge();
-        this.showToast('¡Bienvenido a Hidratador Pro! 🎉');
+        this.startReminders();
+        this.renderCalendar();
+        this.renderAchievements();
+        this.showToast('¡Bienvenido a Hidratador Ultra Pro! 🎉');
     }
 
     // ============================================
@@ -260,16 +440,29 @@ class HidratadorApp {
     // ============================================
 
     addWater(ml) {
+        // Validate
+        if (ml < 50 || ml > 2000) {
+            this.showToast('❌ Cantidad inválida');
+            return;
+        }
+
         const glasses = ml / this.settings.glassSize;
         this.waterCount += glasses;
 
-        // Add to history
+        // Add to today's history
         const entry = {
             time: new Date().toISOString(),
             amount: ml,
             id: Date.now()
         };
-        this.history.unshift(entry); // Add to beginning
+        this.history.unshift(entry);
+
+        // Add to all-time history
+        this.allTimeHistory.push({
+            date: new Date().toDateString(),
+            amount: ml,
+            time: new Date().toISOString()
+        });
 
         // Update stats
         this.lastDrinkDate = new Date().toDateString();
@@ -280,6 +473,8 @@ class HidratadorApp {
 
         // Check achievements
         this.checkGoalCompletion();
+        this.checkAchievements();
+        this.checkDailyChallenge();
 
         // Save and update
         this.saveToStorage();
@@ -294,15 +489,17 @@ class HidratadorApp {
     deleteHistoryItem(id) {
         const index = this.history.findIndex(item => item.id === id);
         if (index !== -1) {
-            const item = this.history[index];
-            const glasses = item.amount / this.settings.glassSize;
-            this.waterCount -= glasses;
-            this.totalLifetimeWater -= item.amount;
-            this.history.splice(index, 1);
+            if (confirm('¿Eliminar este registro?')) {
+                const item = this.history[index];
+                const glasses = item.amount / this.settings.glassSize;
+                this.waterCount -= glasses;
+                this.totalLifetimeWater -= item.amount;
+                this.history.splice(index, 1);
 
-            this.saveToStorage();
-            this.updateAllUI();
-            this.showToast('Registro eliminado');
+                this.saveToStorage();
+                this.updateAllUI();
+                this.showToast('Registro eliminado');
+            }
         }
     }
 
@@ -323,9 +520,79 @@ class HidratadorApp {
         }
     }
 
+    checkDailyChallenge() {
+        if (this.challengeCompleted) return;
+
+        // Check if challenge is completed
+        const percentage = (this.waterCount / this.settings.dailyGoal) * 100;
+
+        if (percentage >= 100) {
+            this.challengeCompleted = true;
+            this.addXP(50);
+            this.showToast('🏆 ¡Desafío diario completado! +50 XP');
+            this.saveToStorage();
+        }
+    }
+
     // ============================================
     // GAMIFICATION
     // ============================================
+
+    defineAchievements() {
+        this.achievements = [
+            { id: 'first_glass', name: 'Primera Gota', desc: 'Bebe tu primer vaso', icon: '💧', condition: () => this.totalLifetimeWater >= 250 },
+            { id: 'first_day', name: 'Primer Día', desc: 'Completa tu primera meta', icon: '🎯', condition: () => this.waterCount >= this.settings.dailyGoal },
+            { id: 'streak_3', name: 'Constante', desc: 'Racha de 3 días', icon: '🔥', condition: () => this.streak >= 3 },
+            { id: 'streak_7', name: 'Semana Perfecta', desc: 'Racha de 7 días', icon: '⭐', condition: () => this.streak >= 7 },
+            { id: 'streak_30', name: 'Mes Legendario', desc: 'Racha de 30 días', icon: '👑', condition: () => this.streak >= 30 },
+            { id: 'level_5', name: 'Novato', desc: 'Alcanza nivel 5', icon: '🌱', condition: () => this.level >= 5 },
+            { id: 'level_10', name: 'Experto', desc: 'Alcanza nivel 10', icon: '💪', condition: () => this.level >= 10 },
+            { id: 'level_25', name: 'Maestro', desc: 'Alcanza nivel 25', icon: '🏆', condition: () => this.level >= 25 },
+            { id: 'total_10L', name: 'Hidratado', desc: 'Bebe 10L totales', icon: '🌊', condition: () => this.totalLifetimeWater >= 10000 },
+            { id: 'total_100L', name: 'Océano', desc: 'Bebe 100L totales', icon: '🌊', condition: () => this.totalLifetimeWater >= 100000 },
+            { id: 'early_bird', name: 'Madrugador', desc: 'Bebe antes de las 8 AM', icon: '🌅', condition: () => {
+                const hour = new Date().getHours();
+                return hour < 8 && this.waterCount > 0;
+            }},
+            { id: 'night_owl', name: 'Noctámbulo', desc: 'Bebe después de las 10 PM', icon: '🌙', condition: () => {
+                const hour = new Date().getHours();
+                return hour >= 22 && this.waterCount > 0;
+            }}
+        ];
+    }
+
+    checkAchievements() {
+        this.achievements.forEach(achievement => {
+            if (!this.unlockedAchievements.includes(achievement.id) && achievement.condition()) {
+                this.unlockAchievement(achievement);
+            }
+        });
+    }
+
+    unlockAchievement(achievement) {
+        this.unlockedAchievements.push(achievement.id);
+        this.addXP(50);
+        this.showToast(`🏆 Logro desbloqueado: ${achievement.name}!`);
+        this.playSound();
+        this.saveToStorage();
+        this.renderAchievements();
+    }
+
+    renderAchievements() {
+        if (!this.elements.achievementGrid) return;
+
+        const html = this.achievements.map(achievement => {
+            const unlocked = this.unlockedAchievements.includes(achievement.id);
+            return `
+                <div class="achievement-card ${unlocked ? 'unlocked' : 'locked'}" title="${achievement.desc}">
+                    <div class="achievement-icon">${achievement.icon}</div>
+                    <div class="achievement-name">${achievement.name}</div>
+                </div>
+            `;
+        }).join('');
+
+        this.elements.achievementGrid.innerHTML = html;
+    }
 
     addXP(amount) {
         this.xp += amount;
@@ -344,6 +611,7 @@ class HidratadorApp {
         this.xp = 0;
         this.showToast(`🎉 ¡Subiste al Nivel ${this.level}!`);
         this.playSound();
+        this.checkAchievements();
         this.saveToStorage();
     }
 
@@ -378,6 +646,11 @@ class HidratadorApp {
             this.streak = 1;
         }
 
+        if (this.streak > this.bestStreak) {
+            this.bestStreak = this.streak;
+        }
+
+        this.checkAchievements();
         this.saveToStorage();
     }
 
@@ -390,7 +663,9 @@ class HidratadorApp {
             'Completa tu meta antes de las 8 PM',
             'Bebe 4 vasos antes del mediodía',
             'Alcanza tu meta sin saltarte ningún horario',
-            'Bebe agua cada 2 horas hoy'
+            'Bebe agua cada 2 horas hoy',
+            'Completa tu meta diaria',
+            'Bebe un vaso al despertar'
         ];
 
         const today = new Date().toDateString();
@@ -399,6 +674,7 @@ class HidratadorApp {
         if (savedDate !== today) {
             const randomIndex = Math.floor(Math.random() * challenges.length);
             this.dailyChallenge = challenges[randomIndex];
+            this.challengeCompleted = false;
             localStorage.setItem('challenge_date', today);
             localStorage.setItem('challenge_text', this.dailyChallenge);
         } else {
@@ -411,13 +687,144 @@ class HidratadorApp {
     }
 
     // ============================================
+    // CALENDAR
+    // ============================================
+
+    renderCalendar() {
+        if (!this.elements.calendarGrid || !this.elements.calendarMonth) return;
+
+        const year = this.currentMonth.getFullYear();
+        const month = this.currentMonth.getMonth();
+
+        // Update month title
+        const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                           'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+        this.elements.calendarMonth.textContent = `${monthNames[month]} ${year}`;
+
+        // Get first day and days in month
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        // Calculate water data for each day
+        const monthData = {};
+        this.allTimeHistory.forEach(entry => {
+            const entryDate = new Date(entry.date);
+            if (entryDate.getMonth() === month && entryDate.getFullYear() === year) {
+                const day = entryDate.getDate();
+                monthData[day] = (monthData[day] || 0) + entry.amount;
+            }
+        });
+
+        // Build calendar HTML
+        let html = '';
+
+        // Empty cells before first day
+        for (let i = 0; i < firstDay; i++) {
+            html += '<div class="calendar-day empty"></div>';
+        }
+
+        // Days of month
+        for (let day = 1; day <= daysInMonth; day++) {
+            const totalMl = monthData[day] || 0;
+            const goalMl = this.settings.dailyGoal * this.settings.glassSize;
+            const percentage = Math.min((totalMl / goalMl) * 100, 100);
+
+            let className = 'calendar-day';
+            if (percentage >= 100) className += ' complete';
+            else if (percentage >= 50) className += ' partial';
+            else if (percentage > 0) className += ' minimal';
+
+            const isToday = day === new Date().getDate() &&
+                           month === new Date().getMonth() &&
+                           year === new Date().getFullYear();
+            if (isToday) className += ' today';
+
+            html += `
+                <div class="${className}" title="${totalMl}ml (${Math.round(percentage)}%)">
+                    <div class="day-number">${day}</div>
+                    <div class="day-progress" style="height: ${percentage}%"></div>
+                </div>
+            `;
+        }
+
+        this.elements.calendarGrid.innerHTML = html;
+    }
+
+    // ============================================
+    // TIMELINE
+    // ============================================
+
+    updateTimeline() {
+        if (!this.elements.timeline) return;
+
+        if (this.history.length === 0) {
+            this.elements.timeline.innerHTML = '<p class="empty-message">No hay registros para hoy</p>';
+            return;
+        }
+
+        const html = this.history.map(entry => {
+            const time = new Date(entry.time);
+            const timeStr = time.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+
+            return `
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-time">${timeStr}</div>
+                        <div class="timeline-amount">${entry.amount}ml</div>
+                    </div>
+                    <button class="timeline-delete" onclick="app.deleteHistoryItem(${entry.id})">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 6L6 18M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            `;
+        }).join('');
+
+        this.elements.timeline.innerHTML = html;
+    }
+
+    // ============================================
+    // STATS
+    // ============================================
+
+    updateMonthlyStats() {
+        const now = new Date();
+        const currentMonth = now.getMonth();
+        const currentYear = now.getFullYear();
+
+        // Filter this month's data
+        const monthHistory = this.allTimeHistory.filter(entry => {
+            const date = new Date(entry.date);
+            return date.getMonth() === currentMonth && date.getFullYear() === currentYear;
+        });
+
+        // Calculate stats
+        const daysWithData = new Set(monthHistory.map(e => e.date)).size;
+        const totalLiters = monthHistory.reduce((sum, e) => sum + e.amount, 0) / 1000;
+        const avgDaily = daysWithData > 0 ? totalLiters / daysWithData : 0;
+
+        // Update UI
+        const monthDaysEl = document.getElementById('monthDays');
+        const monthLitersEl = document.getElementById('monthLiters');
+        const monthBestEl = document.getElementById('monthBest');
+        const monthAvgEl = document.getElementById('monthAvg');
+
+        if (monthDaysEl) monthDaysEl.textContent = daysWithData;
+        if (monthLitersEl) monthLitersEl.textContent = totalLiters.toFixed(1);
+        if (monthBestEl) monthBestEl.textContent = this.bestStreak;
+        if (monthAvgEl) monthAvgEl.textContent = avgDaily.toFixed(1);
+    }
+
+    // ============================================
     // UI UPDATES
     // ============================================
 
     updateAllUI() {
         this.updateWaterDisplay();
         this.updateProgress();
-        this.updateHistory();
+        this.updateTimeline();
         this.updateLevelUI();
         this.updateAchievementBadge();
         this.updateQuickStats();
@@ -491,32 +898,349 @@ class HidratadorApp {
         }
     }
 
-    updateHistory() {
-        if (!this.elements.historyList) return;
+    // ============================================
+    // SETTINGS
+    // ============================================
 
-        if (this.history.length === 0) {
-            this.elements.historyList.innerHTML = '<p class="empty-message">No hay registros hoy</p>';
-            return;
+    incrementSetting(target) {
+        const limits = {
+            dailyGoal: { min: 1, max: 20, step: 1 },
+            glassSize: { min: 100, max: 1000, step: 50 },
+            reminderInterval: { min: 15, max: 240, step: 15 }
+        };
+
+        const limit = limits[target];
+        if (!limit) return;
+
+        const input = document.getElementById(`${target}Input`);
+        if (!input) return;
+
+        let value = parseInt(input.value) || limit.min;
+        value = Math.min(value + limit.step, limit.max);
+        input.value = value;
+    }
+
+    decrementSetting(target) {
+        const limits = {
+            dailyGoal: { min: 1, max: 20, step: 1 },
+            glassSize: { min: 100, max: 1000, step: 50 },
+            reminderInterval: { min: 15, max: 240, step: 15 }
+        };
+
+        const limit = limits[target];
+        if (!limit) return;
+
+        const input = document.getElementById(`${target}Input`);
+        if (!input) return;
+
+        let value = parseInt(input.value) || limit.min;
+        value = Math.max(value - limit.step, limit.min);
+        input.value = value;
+    }
+
+    saveSettings() {
+        // Profile
+        if (this.elements.profileName) {
+            this.settings.userName = this.elements.profileName.value || 'Usuario';
         }
 
-        const historyHTML = this.history.map(entry => {
-            const time = new Date(entry.time);
-            const timeStr = time.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+        if (this.elements.userWeight) {
+            const weight = parseInt(this.elements.userWeight.value);
+            if (weight >= 30 && weight <= 200) {
+                this.settings.weight = weight;
+            }
+        }
 
-            return `
-                <div class="history-item">
-                    <div class="history-time">${timeStr}</div>
-                    <div class="history-amount">${entry.amount}ml</div>
-                    <button class="history-delete" onclick="app.deleteHistoryItem(${entry.id})">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 6L6 18M6 6l12 12"/>
-                        </svg>
-                    </button>
-                </div>
-            `;
-        }).join('');
+        if (this.elements.activityLevel) {
+            this.settings.activity = this.elements.activityLevel.value;
+        }
 
-        this.elements.historyList.innerHTML = historyHTML;
+        // Goals
+        if (this.elements.dailyGoalInput) {
+            const goal = parseInt(this.elements.dailyGoalInput.value);
+            if (goal >= 1 && goal <= 20) {
+                this.settings.dailyGoal = goal;
+            }
+        }
+
+        if (this.elements.glassSizeInput) {
+            const size = parseInt(this.elements.glassSizeInput.value);
+            if (size >= 100 && size <= 1000) {
+                this.settings.glassSize = size;
+            }
+        }
+
+        // Notifications
+        if (this.elements.notificationsEnabled) {
+            this.settings.notificationsEnabled = this.elements.notificationsEnabled.checked;
+        }
+
+        if (this.elements.reminderIntervalInput) {
+            const interval = parseInt(this.elements.reminderIntervalInput.value);
+            if (interval >= 15 && interval <= 240) {
+                this.settings.reminderInterval = interval;
+            }
+        }
+
+        if (this.elements.soundEnabled) {
+            this.settings.soundEnabled = this.elements.soundEnabled.checked;
+        }
+
+        if (this.elements.vibrationEnabled) {
+            this.settings.vibrationEnabled = this.elements.vibrationEnabled.checked;
+        }
+
+        // Save and update
+        this.saveToStorage();
+        this.updateAllUI();
+        this.showToast('⚙️ Configuración guardada');
+
+        // Restart reminders with new interval
+        this.startReminders();
+    }
+
+    loadSettingsToUI() {
+        if (this.elements.profileName) {
+            this.elements.profileName.value = this.settings.userName;
+        }
+
+        if (this.elements.userWeight) {
+            this.elements.userWeight.value = this.settings.weight;
+        }
+
+        if (this.elements.activityLevel) {
+            this.elements.activityLevel.value = this.settings.activity;
+        }
+
+        if (this.elements.dailyGoalInput) {
+            this.elements.dailyGoalInput.value = this.settings.dailyGoal;
+        }
+
+        if (this.elements.glassSizeInput) {
+            this.elements.glassSizeInput.value = this.settings.glassSize;
+        }
+
+        if (this.elements.reminderIntervalInput) {
+            this.elements.reminderIntervalInput.value = this.settings.reminderInterval;
+        }
+
+        if (this.elements.notificationsEnabled) {
+            this.elements.notificationsEnabled.checked = this.settings.notificationsEnabled;
+        }
+
+        if (this.elements.soundEnabled) {
+            this.elements.soundEnabled.checked = this.settings.soundEnabled;
+        }
+
+        if (this.elements.vibrationEnabled) {
+            this.elements.vibrationEnabled.checked = this.settings.vibrationEnabled;
+        }
+    }
+
+    // ============================================
+    // EXPORT/IMPORT
+    // ============================================
+
+    exportData(format = 'json') {
+        const data = {
+            settings: this.settings,
+            waterCount: this.waterCount,
+            history: this.history,
+            allTimeHistory: this.allTimeHistory,
+            streak: this.streak,
+            bestStreak: this.bestStreak,
+            level: this.level,
+            xp: this.xp,
+            totalLifetimeWater: this.totalLifetimeWater,
+            unlockedAchievements: this.unlockedAchievements,
+            exportDate: new Date().toISOString()
+        };
+
+        if (format === 'json') {
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `hidratador-backup-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            this.showToast('📥 Datos exportados (JSON)');
+        } else if (format === 'csv') {
+            let csv = 'Fecha,Hora,Cantidad (ml)\n';
+            this.allTimeHistory.forEach(entry => {
+                const date = new Date(entry.time);
+                csv += `${date.toLocaleDateString()},${date.toLocaleTimeString()},${entry.amount}\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `hidratador-historial-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            this.showToast('📥 Historial exportado (CSV)');
+        }
+    }
+
+    importData(file) {
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const data = JSON.parse(e.target.result);
+
+                if (confirm('⚠️ ¿Importar datos? Esto sobrescribirá tus datos actuales.')) {
+                    // Validate and import
+                    if (data.settings) this.settings = { ...this.settings, ...data.settings };
+                    if (data.waterCount !== undefined) this.waterCount = data.waterCount;
+                    if (data.history) this.history = data.history;
+                    if (data.allTimeHistory) this.allTimeHistory = data.allTimeHistory;
+                    if (data.streak !== undefined) this.streak = data.streak;
+                    if (data.bestStreak !== undefined) this.bestStreak = data.bestStreak;
+                    if (data.level !== undefined) this.level = data.level;
+                    if (data.xp !== undefined) this.xp = data.xp;
+                    if (data.totalLifetimeWater !== undefined) this.totalLifetimeWater = data.totalLifetimeWater;
+                    if (data.unlockedAchievements) this.unlockedAchievements = data.unlockedAchievements;
+
+                    this.saveToStorage();
+                    this.updateAllUI();
+                    this.renderCalendar();
+                    this.renderAchievements();
+                    this.loadSettingsToUI();
+                    this.showToast('✅ Datos importados correctamente');
+                }
+            } catch (error) {
+                this.showToast('❌ Error: Archivo inválido');
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    resetAllData() {
+        // Clear all data
+        this.waterCount = 0;
+        this.history = [];
+        this.allTimeHistory = [];
+        this.streak = 0;
+        this.bestStreak = 0;
+        this.level = 1;
+        this.xp = 0;
+        this.totalLifetimeWater = 0;
+        this.unlockedAchievements = [];
+
+        // Reset settings to defaults
+        this.settings = {
+            dailyGoal: 8,
+            glassSize: 250,
+            reminderInterval: 60,
+            notificationsEnabled: false,
+            soundEnabled: true,
+            vibrationEnabled: true,
+            darkMode: false,
+            userName: 'Usuario',
+            weight: 70,
+            activity: 'light'
+        };
+
+        // Clear localStorage
+        localStorage.clear();
+
+        // Update UI
+        this.updateAllUI();
+        this.renderCalendar();
+        this.renderAchievements();
+        this.loadSettingsToUI();
+
+        this.showToast('🗑️ Todos los datos han sido borrados');
+    }
+
+    // ============================================
+    // SHARE
+    // ============================================
+
+    async shareProgress() {
+        const percentage = Math.min((this.waterCount / this.settings.dailyGoal) * 100, 100);
+        const liters = ((this.waterCount * this.settings.glassSize) / 1000).toFixed(1);
+
+        const text = `💧 Hidratador Pro
+📊 Progreso hoy: ${Math.round(percentage)}%
+🌊 Consumido: ${liters}L
+🔥 Racha: ${this.streak} días
+⭐ Nivel: ${this.level}
+
+¡Mantente hidratado! 🚀`;
+
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: 'Mi Progreso - Hidratador Pro',
+                    text: text
+                });
+                this.showToast('📤 Compartido exitosamente');
+            } catch (error) {
+                if (error.name !== 'AbortError') {
+                    this.copyToClipboard(text);
+                }
+            }
+        } else {
+            this.copyToClipboard(text);
+        }
+    }
+
+    copyToClipboard(text) {
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(text);
+            this.showToast('📋 Copiado al portapapeles');
+        } else {
+            this.showToast('❌ No se pudo compartir');
+        }
+    }
+
+    // ============================================
+    // NOTIFICATIONS & REMINDERS
+    // ============================================
+
+    startReminders() {
+        // Clear existing timer
+        if (this.reminderTimerId) {
+            clearInterval(this.reminderTimerId);
+        }
+
+        if (!this.settings.notificationsEnabled) return;
+
+        // Start new timer
+        const intervalMs = this.settings.reminderInterval * 60 * 1000;
+        this.reminderTimerId = setInterval(() => {
+            this.sendReminder();
+        }, intervalMs);
+    }
+
+    sendReminder() {
+        if (!this.settings.notificationsEnabled) return;
+        if (Notification.permission !== 'granted') return;
+
+        const percentage = (this.waterCount / this.settings.dailyGoal) * 100;
+
+        if (percentage >= 100) return; // No reminder if goal completed
+
+        const messages = [
+            '💧 ¡Es hora de hidratarte!',
+            '🌊 No olvides beber agua',
+            '⏰ Recordatorio: Bebe un vaso de agua',
+            '💪 ¡Mantente hidratado!',
+            '✨ Tu cuerpo necesita agua'
+        ];
+
+        const message = messages[Math.floor(Math.random() * messages.length)];
+
+        new Notification('Hidratador Pro', {
+            body: message,
+            icon: '/icon-192.png',
+            badge: '/icon-192.png',
+            vibrate: this.settings.vibrationEnabled ? [200, 100, 200] : undefined
+        });
     }
 
     // ============================================
@@ -540,6 +1264,11 @@ class HidratadorApp {
         document.querySelectorAll('.nav-item').forEach(item => {
             item.classList.toggle('active', item.dataset.view === viewName);
         });
+
+        // Load settings to UI when switching to settings
+        if (viewName === 'settings') {
+            this.loadSettingsToUI();
+        }
     }
 
     // ============================================
@@ -555,7 +1284,6 @@ class HidratadorApp {
     applyDarkMode() {
         if (this.settings.darkMode) {
             document.body.classList.add('dark-mode');
-            // Update icons
             const sunIcon = this.elements.darkModeToggle?.querySelector('.sun-icon');
             const moonIcon = this.elements.darkModeToggle?.querySelector('.moon-icon');
             if (sunIcon) sunIcon.style.display = 'none';
@@ -595,10 +1323,15 @@ class HidratadorApp {
                     this.waterCount = parsed.waterCount || 0;
                     this.history = parsed.history || [];
                 } else {
-                    // New day - reset
                     this.waterCount = 0;
                     this.history = [];
                 }
+            }
+
+            // All-time history
+            const allHistory = localStorage.getItem('all_time_history');
+            if (allHistory) {
+                this.allTimeHistory = JSON.parse(allHistory);
             }
 
             // Game data
@@ -608,8 +1341,14 @@ class HidratadorApp {
                 this.level = parsed.level || 1;
                 this.xp = parsed.xp || 0;
                 this.streak = parsed.streak || 0;
+                this.bestStreak = parsed.bestStreak || 0;
                 this.totalLifetimeWater = parsed.totalLifetimeWater || 0;
+                this.unlockedAchievements = parsed.unlockedAchievements || [];
             }
+
+            // Challenge
+            const challengeComplete = localStorage.getItem('challenge_complete');
+            this.challengeCompleted = challengeComplete === 'true';
         } catch (error) {
             console.error('Error loading from storage:', error);
         }
@@ -617,13 +1356,9 @@ class HidratadorApp {
 
     saveToStorage() {
         try {
-            // Onboarding
             localStorage.setItem('onboarding_complete', this.hasCompletedOnboarding.toString());
-
-            // Settings
             localStorage.setItem('settings', JSON.stringify(this.settings));
 
-            // Daily data
             const dailyData = {
                 date: new Date().toDateString(),
                 waterCount: this.waterCount,
@@ -631,16 +1366,24 @@ class HidratadorApp {
             };
             localStorage.setItem('daily_data', JSON.stringify(dailyData));
 
-            // Game data
+            localStorage.setItem('all_time_history', JSON.stringify(this.allTimeHistory));
+
             const gameData = {
                 level: this.level,
                 xp: this.xp,
                 streak: this.streak,
-                totalLifetimeWater: this.totalLifetimeWater
+                bestStreak: this.bestStreak,
+                totalLifetimeWater: this.totalLifetimeWater,
+                unlockedAchievements: this.unlockedAchievements
             };
             localStorage.setItem('game_data', JSON.stringify(gameData));
+
+            localStorage.setItem('challenge_complete', this.challengeCompleted.toString());
         } catch (error) {
             console.error('Error saving to storage:', error);
+            if (error.name === 'QuotaExceededError') {
+                this.showToast('⚠️ Almacenamiento lleno');
+            }
         }
     }
 
@@ -649,16 +1392,13 @@ class HidratadorApp {
     // ============================================
 
     showToast(message) {
-        // Create toast element
         const toast = document.createElement('div');
         toast.className = 'toast';
         toast.textContent = message;
         document.body.appendChild(toast);
 
-        // Show toast
         setTimeout(() => toast.classList.add('show'), 10);
 
-        // Remove toast
         setTimeout(() => {
             toast.classList.remove('show');
             setTimeout(() => toast.remove(), 300);
@@ -683,7 +1423,7 @@ class HidratadorApp {
             oscillator.start(audioContext.currentTime);
             oscillator.stop(audioContext.currentTime + 0.1);
         } catch (error) {
-            // Silently fail if audio not supported
+            // Silently fail
         }
     }
 
@@ -705,6 +1445,7 @@ class HidratadorApp {
         setTimeout(() => {
             this.waterCount = 0;
             this.history = [];
+            this.challengeCompleted = false;
             this.generateDailyChallenge();
             this.saveToStorage();
             this.updateAllUI();
@@ -722,10 +1463,13 @@ let app;
 
 document.addEventListener('DOMContentLoaded', () => {
     app = new HidratadorApp();
-    window.app = app; // Make globally accessible
+    window.app = app;
 });
 
-// Add toast CSS
+// ============================================
+// DYNAMIC STYLES
+// ============================================
+
 const style = document.createElement('style');
 style.textContent = `
     .toast {
@@ -733,15 +1477,16 @@ style.textContent = `
         top: 20px;
         left: 50%;
         transform: translateX(-50%) translateY(-100px);
-        background: rgba(14, 165, 233, 0.95);
+        background: linear-gradient(135deg, rgba(14, 165, 233, 0.95), rgba(6, 182, 212, 0.95));
         color: white;
-        padding: 12px 24px;
-        border-radius: 12px;
+        padding: 16px 32px;
+        border-radius: 16px;
         font-weight: 600;
-        z-index: 1000;
+        z-index: 10000;
         opacity: 0;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 8px 32px rgba(14, 165, 233, 0.3);
+        backdrop-filter: blur(10px);
     }
 
     .toast.show {
@@ -751,9 +1496,189 @@ style.textContent = `
 
     .empty-message {
         text-align: center;
-        padding: 40px 20px;
-        color: #9CA3AF;
-        font-size: 0.9rem;
+        padding: 60px 20px;
+        color: var(--gray-400);
+        font-size: 0.9375rem;
+        font-weight: 500;
+    }
+
+    /* Timeline Styles */
+    .timeline-item {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        padding: var(--space-3);
+        background: white;
+        border-radius: var(--radius-lg);
+        transition: all var(--transition-base);
+        position: relative;
+    }
+
+    .timeline-item:hover {
+        transform: translateX(4px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .timeline-dot {
+        width: 12px;
+        height: 12px;
+        background: var(--primary-500);
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .timeline-content {
+        flex: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .timeline-time {
+        font-size: 0.875rem;
+        color: var(--gray-600);
+        font-weight: 500;
+    }
+
+    .timeline-amount {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--primary-600);
+    }
+
+    .timeline-delete {
+        width: 32px;
+        height: 32px;
+        border: none;
+        background: var(--gray-100);
+        border-radius: var(--radius-md);
+        color: var(--gray-600);
+        cursor: pointer;
+        transition: all var(--transition-base);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .timeline-delete:hover {
+        background: #fee;
+        color: #dc2626;
+    }
+
+    .timeline-delete svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    /* Calendar Day Styles */
+    .calendar-day {
+        aspect-ratio: 1;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--gray-200);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        cursor: pointer;
+        transition: all var(--transition-base);
+        overflow: hidden;
+        background: white;
+    }
+
+    .calendar-day.empty {
+        border: none;
+        background: transparent;
+        cursor: default;
+    }
+
+    .calendar-day:not(.empty):hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+    }
+
+    .calendar-day.today {
+        border-color: var(--primary-500);
+        border-width: 2px;
+    }
+
+    .day-number {
+        position: relative;
+        z-index: 2;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--gray-700);
+    }
+
+    .day-progress {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(180deg, rgba(14, 165, 233, 0.2), rgba(14, 165, 233, 0.4));
+        transition: height 0.3s ease;
+        z-index: 1;
+    }
+
+    .calendar-day.complete {
+        background: linear-gradient(135deg, #ecfeff 0%, #cffafe 100%);
+    }
+
+    .calendar-day.complete .day-number {
+        color: var(--primary-700);
+        font-weight: 700;
+    }
+
+    .calendar-day.partial {
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    }
+
+    .calendar-day.minimal {
+        background: #f8fafc;
+    }
+
+    /* Achievement Cards */
+    .achievement-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-3);
+        background: white;
+        border-radius: var(--radius-xl);
+        transition: all var(--transition-base);
+        cursor: pointer;
+        border: 2px solid var(--gray-200);
+    }
+
+    .achievement-card.unlocked {
+        border-color: var(--primary-400);
+        background: linear-gradient(135deg, #ecfeff 0%, white 100%);
+    }
+
+    .achievement-card.locked {
+        opacity: 0.4;
+        filter: grayscale(1);
+    }
+
+    .achievement-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(14, 165, 233, 0.2);
+    }
+
+    .achievement-icon {
+        font-size: 2rem;
+    }
+
+    .achievement-name {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-align: center;
+        color: var(--gray-700);
+    }
+
+    .achievement-card.unlocked .achievement-name {
+        color: var(--primary-700);
     }
 `;
 document.head.appendChild(style);
