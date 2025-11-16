@@ -142,6 +142,9 @@ class HidratadorApp {
             if (document.getElementById('weeklyChart')) {
                 this.renderWeeklyChart();
             }
+
+            // HEALTH ANALYTICS - Professional Features
+            this.setupHealthAnalytics();
         }
 
         console.log('✅ App initialized - v7.0 Profesional Vendible');
@@ -577,6 +580,10 @@ class HidratadorApp {
         this.startReminders();
         this.renderCalendar();
         this.renderAchievements();
+
+        // HEALTH ANALYTICS - Professional Features
+        this.setupHealthAnalytics();
+
         this.showToast('✅ Perfil médico configurado');
     }
 
@@ -744,6 +751,9 @@ class HidratadorApp {
             if (document.getElementById('weeklyChart')) {
                 this.renderWeeklyChart();
             }
+
+            // HEALTH ANALYTICS - Professional Features
+            this.setupHealthAnalytics();
         }
     }
 
@@ -865,6 +875,10 @@ class HidratadorApp {
         // Save and update
         this.saveToStorage();
         this.updateAllUI();
+
+        // Update health analytics
+        this.updateHealthMetrics();
+        this.calculateSmartPrediction();
 
         // Show feedback
         this.showToast(`+${ml}ml agregados 💧`);
@@ -2325,6 +2339,238 @@ class HidratadorApp {
             ctx.textAlign = 'center';
             ctx.fillText(day.date, x + barWidth / 2, height - 5);
         });
+    }
+
+    // ============================================
+    // HEALTH DATA ANALYTICS - Professional Features
+    // ============================================
+
+    setupHealthAnalytics() {
+        // Symptoms Detector
+        const symptomChecks = document.querySelectorAll('.symptom-check');
+        symptomChecks.forEach(check => {
+            check.addEventListener('change', () => this.analyzeSymptoms());
+        });
+
+        // Urine Color Analyzer
+        const urineColors = document.querySelectorAll('.urine-color');
+        urineColors.forEach((btn, index) => {
+            btn.addEventListener('click', () => this.analyzeUrineColor(index + 1));
+        });
+
+        // Initial calculations
+        this.updateHealthMetrics();
+        this.calculateSmartPrediction();
+    }
+
+    analyzeSymptoms() {
+        const checkedSymptoms = document.querySelectorAll('.symptom-check:checked');
+        const count = checkedSymptoms.length;
+
+        const badge = document.getElementById('symptomsBadge');
+        const result = document.getElementById('symptomResult');
+
+        if (badge) {
+            badge.textContent = count === 0 ? 'Sin síntomas' : `${count} detectado${count > 1 ? 's' : ''}`;
+        }
+
+        if (!result) return;
+
+        result.className = 'symptom-result';
+
+        if (count === 0) {
+            result.className += ' ok';
+            result.innerHTML = '<strong>✓ Excelente!</strong> No presentas síntomas de deshidratación. Continúa con tu plan de hidratación.';
+        } else if (count <= 2) {
+            result.className += ' warning';
+            result.innerHTML = '<strong>⚠️ Atención:</strong> Presentas síntomas leves de deshidratación. Bebe agua inmediatamente y aumenta tu consumo diario en 2-3 vasos.';
+        } else {
+            result.className += ' danger';
+            result.innerHTML = '<strong>🚨 Importante:</strong> Múltiples síntomas detectados. Bebe agua de inmediato. Si los síntomas persisten por más de 24 horas, consulta a un médico.';
+        }
+
+        // Store symptoms for correlation
+        this.currentSymptoms = Array.from(checkedSymptoms).map(c => c.dataset.symptom);
+        this.saveToStorage();
+    }
+
+    analyzeUrineColor(level) {
+        // Remove previous selection
+        document.querySelectorAll('.urine-color').forEach(btn => btn.classList.remove('selected'));
+
+        // Select current
+        const selectedBtn = document.querySelector(`.urine-color[data-level="${level}"]`);
+        if (selectedBtn) {
+            selectedBtn.classList.add('selected');
+        }
+
+        const analysis = document.getElementById('urineAnalysis');
+        const levelBadge = document.getElementById('hydrationLevel');
+
+        const levels = [
+            {
+                status: 'Excelente',
+                text: '<strong>Excelentemente hidratado</strong><br>Posible sobre-hidratación. Reduce ligeramente tu consumo.',
+                badge: 'Excelente',
+                color: '#10B981'
+            },
+            {
+                status: 'Óptimo',
+                text: '<strong>Muy bien hidratado</strong><br>Tu nivel de hidratación es óptimo. Mantén este ritmo.',
+                badge: 'Óptimo',
+                color: '#10B981'
+            },
+            {
+                status: 'Bien',
+                text: '<strong>Bien hidratado</strong><br>Nivel de hidratación saludable. Continúa bebiendo agua regularmente.',
+                badge: 'Normal',
+                color: '#3B82F6'
+            },
+            {
+                status: 'Normal',
+                text: '<strong>Hidratación normal</strong><br>Nivel aceptable. Intenta beber 1-2 vasos más hoy.',
+                badge: 'Normal',
+                color: '#3B82F6'
+            },
+            {
+                status: 'Bajo',
+                text: '<strong>Hidratación por debajo de lo óptimo</strong><br>Bebe agua pronto. Necesitas 2-3 vasos adicionales.',
+                badge: 'Bajo',
+                color: '#F59E0B'
+            },
+            {
+                status: 'Deshidratado',
+                text: '<strong>Deshidratación leve</strong><br>⚠️ Bebe agua inmediatamente. Incrementa tu consumo en 3-4 vasos.',
+                badge: 'Deshidratado',
+                color: '#F59E0B'
+            },
+            {
+                status: 'Severo',
+                text: '<strong>Deshidratación severa</strong><br>🚨 Bebe agua urgentemente. Considera soluciones de rehidratación oral.',
+                badge: 'Severo',
+                color: '#EF4444'
+            },
+            {
+                status: 'Peligro',
+                text: '<strong>Deshidratación crítica</strong><br>🆘 Requiere atención médica inmediata. Bebe agua y contacta a un profesional.',
+                badge: 'Crítico',
+                color: '#EF4444'
+            }
+        ];
+
+        const data = levels[level - 1];
+
+        if (analysis) {
+            analysis.innerHTML = `<p class="analysis-text">${data.text}</p>`;
+        }
+
+        if (levelBadge) {
+            levelBadge.textContent = data.badge;
+            levelBadge.style.background = data.color;
+            levelBadge.style.color = 'white';
+        }
+
+        // Store for health correlation
+        this.currentHydrationLevel = level;
+        this.updateHealthMetrics();
+    }
+
+    calculateSmartPrediction() {
+        // Calculate average time between drinks from history
+        if (this.history.length < 2) {
+            const predEl = document.getElementById('nextGlassPrediction');
+            const bestTimeEl = document.getElementById('bestTime');
+            const insightEl = document.getElementById('predictionInsight');
+
+            if (predEl) predEl.textContent = '--:--';
+            if (bestTimeEl) bestTimeEl.textContent = '--:--';
+            if (insightEl) {
+                insightEl.innerHTML = '<p>Registra al menos 2 vasos para generar predicciones personalizadas</p>';
+            }
+            return;
+        }
+
+        // Calculate average interval
+        let totalInterval = 0;
+        for (let i = 1; i < this.history.length; i++) {
+            const prev = new Date(this.history[i].time);
+            const curr = new Date(this.history[i - 1].time);
+            totalInterval += (curr - prev);
+        }
+        const avgInterval = totalInterval / (this.history.length - 1);
+
+        // Next glass prediction
+        const lastDrink = new Date(this.history[0].time);
+        const nextDrink = new Date(lastDrink.getTime() + avgInterval);
+        const minutesUntilNext = Math.round((nextDrink - new Date()) / 60000);
+
+        const predEl = document.getElementById('nextGlassPrediction');
+        if (predEl) {
+            if (minutesUntilNext > 0) {
+                const hours = Math.floor(minutesUntilNext / 60);
+                const mins = minutesUntilNext % 60;
+                predEl.textContent = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+            } else {
+                predEl.textContent = 'Ahora';
+            }
+        }
+
+        // Best time (based on patterns)
+        const bestTimeEl = document.getElementById('bestTime');
+        if (bestTimeEl) {
+            const now = new Date();
+            const bestHour = (now.getHours() + 1) % 24;
+            bestTimeEl.textContent = `${bestHour.toString().padStart(2, '0')}:00`;
+        }
+
+        // Insight
+        const insightEl = document.getElementById('predictionInsight');
+        if (insightEl) {
+            const avgMinutes = Math.round(avgInterval / 60000);
+            insightEl.innerHTML = `<p>En promedio, bebes agua cada <strong>${avgMinutes} minutos</strong>. Basado en tus patrones, te sugerimos tu próximo vaso pronto.</p>`;
+        }
+    }
+
+    updateHealthMetrics() {
+        // Calculate health impact based on hydration level
+        const percentage = Math.min((this.waterCount / this.settings.dailyGoal) * 100, 100);
+
+        // Energy correlates strongly with hydration
+        let energyLevel = percentage;
+        if (this.currentHydrationLevel && this.currentHydrationLevel > 4) {
+            energyLevel = Math.max(0, energyLevel - 20);
+        }
+
+        // Focus/concentration is very sensitive to dehydration
+        let focusLevel = percentage;
+        if (this.currentSymptoms && this.currentSymptoms.includes('headache')) {
+            focusLevel = Math.max(0, focusLevel - 30);
+        }
+        if (this.currentHydrationLevel && this.currentHydrationLevel > 5) {
+            focusLevel = Math.max(0, focusLevel - 25);
+        }
+
+        // Metabolism
+        let metabolismLevel = percentage * 0.9; // Slightly lower correlation
+        if (this.currentSymptoms && this.currentSymptoms.includes('fatigue')) {
+            metabolismLevel = Math.max(0, metabolismLevel - 15);
+        }
+
+        // Update UI
+        const energyFill = document.getElementById('energyLevel');
+        const energyValue = document.getElementById('energyValue');
+        if (energyFill) energyFill.style.width = `${energyLevel}%`;
+        if (energyValue) energyValue.textContent = `${Math.round(energyLevel)}%`;
+
+        const focusFill = document.getElementById('focusLevel');
+        const focusValue = document.getElementById('focusValue');
+        if (focusFill) focusFill.style.width = `${focusLevel}%`;
+        if (focusValue) focusValue.textContent = `${Math.round(focusLevel)}%`;
+
+        const metabolismFill = document.getElementById('metabolismLevel');
+        const metabolismValue = document.getElementById('metabolismValue');
+        if (metabolismFill) metabolismFill.style.width = `${metabolismLevel}%`;
+        if (metabolismValue) metabolismValue.textContent = `${Math.round(metabolismLevel)}%`;
     }
 }
 

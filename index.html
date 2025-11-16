@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="Hidratador Pro - La aplicación más completa para tu hidratación diaria">
-    <meta name="theme-color" content="#0EA5E9" id="themeColor">
+    <meta name="theme-color" content="#2563EB" id="themeColor">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>Hidratador Pro - Salud & Bienestar</title>
@@ -266,8 +266,8 @@
                         <path d="M12 2.69L17.66 8.35C20.78 11.47 20.78 16.53 17.66 19.65C14.54 22.77 9.46 22.77 6.34 19.65C3.22 16.53 3.22 11.47 6.34 8.35L12 2.69Z" fill="url(#water-gradient)"/>
                         <defs>
                             <linearGradient id="water-gradient" x1="12" y1="2.69" x2="12" y2="22">
-                                <stop offset="0%" stop-color="#38BDF8"/>
-                                <stop offset="100%" stop-color="#0EA5E9"/>
+                                <stop offset="0%" stop-color="#3B82F6"/>
+                                <stop offset="100%" stop-color="#2563EB"/>
                             </linearGradient>
                         </defs>
                     </svg>
@@ -345,17 +345,17 @@
                     <div class="water-circle-container">
                         <svg class="water-circle" viewBox="0 0 200 200">
                             <circle cx="100" cy="100" r="90" fill="url(#circle-bg)"/>
-                            <circle class="progress-ring-bg" cx="100" cy="100" r="85" fill="none" stroke="#E0F2FE" stroke-width="12"/>
+                            <circle class="progress-ring-bg" cx="100" cy="100" r="85" fill="none" stroke="#DBEAFE" stroke-width="12"/>
                             <circle class="progress-ring" id="progressRing" cx="100" cy="100" r="85" fill="none" stroke="url(#ring-gradient)" stroke-width="12" stroke-linecap="round"/>
                             <defs>
                                 <linearGradient id="circle-bg" x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <stop offset="0%" stop-color="#F0F9FF"/>
-                                    <stop offset="100%" stop-color="#E0F2FE"/>
+                                    <stop offset="0%" stop-color="#EFF6FF"/>
+                                    <stop offset="100%" stop-color="#DBEAFE"/>
                                 </linearGradient>
                                 <linearGradient id="ring-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="#38BDF8"/>
-                                    <stop offset="50%" stop-color="#0EA5E9"/>
-                                    <stop offset="100%" stop-color="#0284C7"/>
+                                    <stop offset="0%" stop-color="#3B82F6"/>
+                                    <stop offset="50%" stop-color="#2563EB"/>
+                                    <stop offset="100%" stop-color="#1D4ED8"/>
                                 </linearGradient>
                             </defs>
                             <g class="water-icon">
@@ -433,6 +433,113 @@
                     <div class="tip-content">
                         <h4>Consejo de Salud</h4>
                         <p id="tipText">Beber agua al despertar activa tu metabolismo</p>
+                    </div>
+                </div>
+
+                <!-- HEALTH DATA ANALYTICS - Vendible -->
+                <div class="data-analytics-section">
+                    <!-- Symptoms Detector -->
+                    <div class="analytics-card">
+                        <div class="card-header">
+                            <h3>🔬 Detector de Síntomas</h3>
+                            <span class="data-badge" id="symptomsBadge">0 detectados</span>
+                        </div>
+                        <div class="symptoms-checklist">
+                            <label class="symptom-item">
+                                <input type="checkbox" class="symptom-check" data-symptom="headache">
+                                <span class="symptom-label">Dolor de cabeza</span>
+                                <span class="symptom-indicator">⚠️</span>
+                            </label>
+                            <label class="symptom-item">
+                                <input type="checkbox" class="symptom-check" data-symptom="fatigue">
+                                <span class="symptom-label">Fatiga o cansancio</span>
+                                <span class="symptom-indicator">⚠️</span>
+                            </label>
+                            <label class="symptom-item">
+                                <input type="checkbox" class="symptom-check" data-symptom="dizzy">
+                                <span class="symptom-label">Mareos</span>
+                                <span class="symptom-indicator">⚠️</span>
+                            </label>
+                            <label class="symptom-item">
+                                <input type="checkbox" class="symptom-check" data-symptom="drymouth">
+                                <span class="symptom-label">Boca seca</span>
+                                <span class="symptom-indicator">⚠️</span>
+                            </label>
+                        </div>
+                        <div class="symptom-result" id="symptomResult"></div>
+                    </div>
+
+                    <!-- Urine Analysis -->
+                    <div class="analytics-card">
+                        <div class="card-header">
+                            <h3>💧 Análisis de Hidratación</h3>
+                            <span class="data-badge" id="hydrationLevel">Normal</span>
+                        </div>
+                        <p class="card-description">Selecciona el color de tu orina (método médico)</p>
+                        <div class="urine-color-selector">
+                            <button class="urine-color" data-level="1" style="background: #F9F6E7" title="Excelente"></button>
+                            <button class="urine-color" data-level="2" style="background: #F5EDBB" title="Bien hidratado"></button>
+                            <button class="urine-color" data-level="3" style="background: #E8D774" title="Hidratado"></button>
+                            <button class="urine-color" data-level="4" style="background: #D4C243" title="Normal"></button>
+                            <button class="urine-color" data-level="5" style="background: #C9B52B" title="Bebe más agua"></button>
+                            <button class="urine-color" data-level="6" style="background: #B59F1F" title="Deshidratación"></button>
+                            <button class="urine-color" data-level="7" style="background: #9C8412" title="Deshidratación severa"></button>
+                            <button class="urine-color" data-level="8" style="background: #7A6509" title="Peligro"></button>
+                        </div>
+                        <div class="hydration-analysis" id="urineAnalysis">
+                            <p class="analysis-text">Selecciona un color para ver tu estado de hidratación</p>
+                        </div>
+                    </div>
+
+                    <!-- Smart Prediction -->
+                    <div class="analytics-card">
+                        <div class="card-header">
+                            <h3>🤖 Predicción Inteligente</h3>
+                        </div>
+                        <div class="prediction-display">
+                            <div class="prediction-stat">
+                                <span class="stat-label">Próximo vaso en:</span>
+                                <span class="stat-value" id="nextGlassPrediction">--:--</span>
+                            </div>
+                            <div class="prediction-stat">
+                                <span class="stat-label">Mejor momento:</span>
+                                <span class="stat-value" id="bestTime">--:--</span>
+                            </div>
+                            <div class="prediction-insight" id="predictionInsight">
+                                <p>El sistema aprenderá tus patrones de hidratación</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Health Correlation -->
+                    <div class="analytics-card">
+                        <div class="card-header">
+                            <h3>📈 Impacto en tu Salud</h3>
+                        </div>
+                        <div class="health-metrics">
+                            <div class="metric-row">
+                                <span class="metric-label">Nivel de energía</span>
+                                <div class="metric-bar">
+                                    <div class="metric-fill energy" id="energyLevel" style="width: 0%"></div>
+                                </div>
+                                <span class="metric-value" id="energyValue">0%</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">Concentración</span>
+                                <div class="metric-bar">
+                                    <div class="metric-fill focus" id="focusLevel" style="width: 0%"></div>
+                                </div>
+                                <span class="metric-value" id="focusValue">0%</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">Función metabólica</span>
+                                <div class="metric-bar">
+                                    <div class="metric-fill metabolism" id="metabolismLevel" style="width: 0%"></div>
+                                </div>
+                                <span class="metric-value" id="metabolismValue">0%</span>
+                            </div>
+                        </div>
+                        <p class="correlation-note">Basado en tu nivel de hidratación actual</p>
                     </div>
                 </div>
             </section>
@@ -551,34 +658,35 @@
                     <h2>⚙️ Ajustes</h2>
                 </div>
 
-                <!-- Profile Section -->
-                <div class="settings-group">
+                <!-- Profile Section - Compact -->
+                <div class="settings-group compact">
                     <h3>👤 Perfil</h3>
-                    <div class="profile-card">
-                        <div class="profile-avatar" id="profileAvatar">
-                            <span id="avatarInitials">U</span>
-                        </div>
-                        <div class="profile-info">
-                            <input type="text" id="profileName" placeholder="Tu nombre" class="profile-input">
-                            <div class="profile-stats-mini">
-                                <span>Racha: <strong id="profileStreak">0</strong> días consecutivos</span>
+                    <div class="profile-card-compact">
+                        <div class="profile-header-compact">
+                            <div class="profile-avatar-small" id="profileAvatar">
+                                <span id="avatarInitials">U</span>
+                            </div>
+                            <div class="profile-info-compact">
+                                <input type="text" id="profileName" placeholder="Tu nombre" class="profile-input-compact">
+                                <span class="streak-compact">🔥 <strong id="profileStreak">0</strong> días</span>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="setting-item">
-                        <label>Peso (kg):</label>
-                        <input type="number" id="userWeight" min="30" max="200" value="70">
-                    </div>
-
-                    <div class="setting-item">
-                        <label>Actividad física:</label>
-                        <select id="activityLevel">
-                            <option value="sedentary">Sedentario</option>
-                            <option value="light" selected>Actividad ligera</option>
-                            <option value="moderate">Moderado</option>
-                            <option value="active">Muy activo</option>
-                        </select>
+                        <div class="settings-row">
+                            <div class="setting-item-inline">
+                                <label>Peso (kg)</label>
+                                <input type="number" id="userWeight" min="30" max="200" value="70">
+                            </div>
+                            <div class="setting-item-inline">
+                                <label>Actividad</label>
+                                <select id="activityLevel">
+                                    <option value="sedentary">Sedentario</option>
+                                    <option value="light" selected>Ligera</option>
+                                    <option value="moderate">Moderado</option>
+                                    <option value="active">Activo</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -611,24 +719,13 @@
                     </div>
                 </div>
 
-                <!-- Notifications -->
-                <div class="settings-group">
+                <!-- Notifications - Compact -->
+                <div class="settings-group compact">
                     <h3>🔔 Notificaciones</h3>
-
-                    <div class="setting-item">
-                        <label class="toggle-label">
-                            <span class="label-text">Activar notificaciones</span>
-                            <div class="toggle-switch">
-                                <input type="checkbox" id="notificationsEnabled" checked>
-                                <span class="toggle-slider"></span>
-                            </div>
-                        </label>
-                    </div>
 
                     <div class="setting-item">
                         <label>
                             <span class="label-text">Intervalo (minutos)</span>
-                            <span class="label-description">Frecuencia de recordatorios</span>
                         </label>
                         <div class="number-input-group">
                             <button class="number-btn" data-action="decrease" data-target="reminderInterval">−</button>
@@ -637,53 +734,67 @@
                         </div>
                     </div>
 
-                    <div class="setting-item">
-                        <label class="toggle-label">
-                            <span class="label-text">Sonidos</span>
-                            <div class="toggle-switch">
-                                <input type="checkbox" id="soundEnabled" checked>
-                                <span class="toggle-slider"></span>
-                            </div>
-                        </label>
-                    </div>
+                    <div class="toggles-grid">
+                        <div class="setting-item-toggle">
+                            <label class="toggle-label">
+                                <span class="label-text">Notificaciones</span>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="notificationsEnabled" checked>
+                                    <span class="toggle-slider"></span>
+                                </div>
+                            </label>
+                        </div>
 
-                    <div class="setting-item">
-                        <label class="toggle-label">
-                            <span class="label-text">Vibración (móvil)</span>
-                            <div class="toggle-switch">
-                                <input type="checkbox" id="vibrationEnabled" checked>
-                                <span class="toggle-slider"></span>
-                            </div>
-                        </label>
+                        <div class="setting-item-toggle">
+                            <label class="toggle-label">
+                                <span class="label-text">Sonidos</span>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="soundEnabled" checked>
+                                    <span class="toggle-slider"></span>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="setting-item-toggle">
+                            <label class="toggle-label">
+                                <span class="label-text">Vibración</span>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="vibrationEnabled" checked>
+                                    <span class="toggle-slider"></span>
+                                </div>
+                            </label>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Data Management -->
-                <div class="settings-group">
+                <!-- Data Management - Compact -->
+                <div class="settings-group compact">
                     <h3>💾 Datos</h3>
 
-                    <button class="settings-action-btn" id="exportAllDataBtn">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
-                        </svg>
-                        Exportar todos los datos
-                    </button>
+                    <div class="data-buttons-grid">
+                        <button class="settings-action-btn-compact" id="exportAllDataBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                            </svg>
+                            Exportar
+                        </button>
 
-                    <button class="settings-action-btn" id="importDataBtn">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
-                        </svg>
-                        Importar datos
-                    </button>
-                    <input type="file" id="importFileInput" accept=".json" style="display: none;">
+                        <button class="settings-action-btn-compact" id="importDataBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                            </svg>
+                            Importar
+                        </button>
+                        <input type="file" id="importFileInput" accept=".json" style="display: none;">
 
-                    <button class="settings-action-btn danger" id="resetAllDataBtn">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="3 6 5 6 21 6"/>
-                            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
-                        </svg>
-                        Borrar todos los datos
-                    </button>
+                        <button class="settings-action-btn-compact danger" id="resetAllDataBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="3 6 5 6 21 6"/>
+                                <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                            </svg>
+                            Borrar
+                        </button>
+                    </div>
                 </div>
 
                 <!-- About -->

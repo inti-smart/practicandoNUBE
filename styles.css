@@ -2870,6 +2870,211 @@ body.dark-mode {
     box-shadow: 0 2px 8px rgba(239, 68, 68, 0.15);
 }
 
+/* ============================================
+   COMPACT SETTINGS STYLES - Professional
+   ============================================ */
+
+/* Compact Settings Groups */
+.settings-group.compact {
+    padding: var(--space-4);
+    margin-bottom: var(--space-3);
+}
+
+.settings-group.compact h3 {
+    font-size: 0.9375rem;
+    margin-bottom: var(--space-3);
+}
+
+/* Compact Profile Card */
+.profile-card-compact {
+    background: var(--gradient-card);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    border: 1px solid var(--gray-200);
+}
+
+.profile-header-compact {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+}
+
+.profile-avatar-small {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-full);
+    background: var(--gradient-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.profile-info-compact {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.profile-input-compact {
+    border: none;
+    background: transparent;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--gray-900);
+    padding: 0;
+}
+
+.profile-input-compact:focus {
+    outline: none;
+    border-bottom: 2px solid var(--primary-600);
+}
+
+.streak-compact {
+    font-size: 0.8125rem;
+    color: var(--gray-600);
+}
+
+/* Settings Row (2-column layout) */
+.settings-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+}
+
+.setting-item-inline {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.setting-item-inline label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--gray-600);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.setting-item-inline input,
+.setting-item-inline select {
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    background: white;
+}
+
+/* Toggles Grid */
+.toggles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+}
+
+.setting-item-toggle {
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+    padding: var(--space-3);
+}
+
+.setting-item-toggle .toggle-label {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.setting-item-toggle .label-text {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--gray-700);
+}
+
+/* Data Buttons Grid */
+.data-buttons-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-2);
+}
+
+.settings-action-btn-compact {
+    padding: var(--space-3);
+    border: 1.5px solid var(--primary-600);
+    border-radius: var(--radius-lg);
+    background: rgba(37, 99, 235, 0.05);
+    color: var(--primary-700);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-1);
+    min-height: 72px;
+}
+
+.settings-action-btn-compact svg {
+    width: 20px;
+    height: 20px;
+}
+
+.settings-action-btn-compact:hover {
+    background: rgba(37, 99, 235, 0.1);
+    border-color: var(--primary-700);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.settings-action-btn-compact.danger {
+    border-color: var(--error);
+    background: rgba(239, 68, 68, 0.05);
+    color: var(--error);
+}
+
+.settings-action-btn-compact.danger:hover {
+    background: rgba(239, 68, 68, 0.1);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+
+/* Dark Mode Support for Compact Settings */
+.dark-mode .profile-card-compact {
+    background: var(--gray-800);
+    border-color: var(--gray-700);
+}
+
+.dark-mode .profile-input-compact {
+    color: white;
+}
+
+.dark-mode .setting-item-inline input,
+.dark-mode .setting-item-inline select {
+    background: var(--gray-700);
+    border-color: var(--gray-600);
+    color: white;
+}
+
+.dark-mode .setting-item-toggle {
+    background: var(--gray-700);
+}
+
+.dark-mode .settings-action-btn-compact {
+    background: rgba(37, 99, 235, 0.1);
+    border-color: var(--primary-500);
+}
+
+.dark-mode .settings-action-btn-compact:hover {
+    background: rgba(37, 99, 235, 0.2);
+}
+
 /* About Info */
 .about-info {
     padding: var(--space-6);
@@ -4070,4 +4275,357 @@ label {
     font-size: 0.875rem;
     font-weight: 600;
     letter-spacing: 0.01em;
+}
+
+/* ============================================
+   HEALTH DATA ANALYTICS - Professional Features
+   ============================================ */
+
+.data-analytics-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    margin-top: var(--space-6);
+}
+
+.analytics-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: var(--space-5);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-200);
+    transition: all var(--transition-base);
+}
+
+.analytics-card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-4);
+}
+
+.card-header h3 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin: 0;
+}
+
+.data-badge {
+    padding: var(--space-1) var(--space-3);
+    background: var(--primary-100);
+    color: var(--primary-700);
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.card-description {
+    font-size: 0.875rem;
+    color: var(--gray-600);
+    margin-bottom: var(--space-3);
+}
+
+/* Symptoms Detector */
+.symptoms-checklist {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.symptom-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.symptom-item:hover {
+    background: var(--gray-100);
+}
+
+.symptom-check {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.symptom-label {
+    flex: 1;
+    font-size: 0.9375rem;
+    color: var(--gray-800);
+}
+
+.symptom-indicator {
+    font-size: 1.25rem;
+    opacity: 0.3;
+    transition: opacity var(--transition-base);
+}
+
+.symptom-item:has(.symptom-check:checked) {
+    background: #FEF3C7;
+    border: 1px solid #F59E0B;
+}
+
+.symptom-item:has(.symptom-check:checked) .symptom-indicator {
+    opacity: 1;
+}
+
+.symptom-result {
+    margin-top: var(--space-4);
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+
+.symptom-result.warning {
+    background: #FEF3C7;
+    color: #92400E;
+    border-left: 4px solid #F59E0B;
+}
+
+.symptom-result.danger {
+    background: #FEE2E2;
+    color: #991B1B;
+    border-left: 4px solid #EF4444;
+}
+
+.symptom-result.ok {
+    background: #D1FAE5;
+    color: #065F46;
+    border-left: 4px solid #10B981;
+}
+
+/* Urine Color Selector */
+.urine-color-selector {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+}
+
+.urine-color {
+    aspect-ratio: 1;
+    border: 3px solid transparent;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    position: relative;
+}
+
+.urine-color:hover {
+    transform: scale(1.1);
+    border-color: var(--gray-400);
+}
+
+.urine-color.selected {
+    border-color: var(--primary-600);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+.hydration-analysis {
+    padding: var(--space-4);
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+}
+
+.analysis-text {
+    font-size: 0.9375rem;
+    color: var(--gray-700);
+    margin: 0;
+    line-height: 1.6;
+}
+
+.analysis-text strong {
+    color: var(--gray-900);
+    font-weight: 700;
+}
+
+.analysis-recommendation {
+    margin-top: var(--space-2);
+    padding: var(--space-3);
+    background: white;
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    color: var(--primary-700);
+    font-weight: 600;
+}
+
+/* Smart Prediction */
+.prediction-display {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.prediction-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-3);
+    background: var(--gradient-accent);
+    border-radius: var(--radius-lg);
+    color: white;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    font-family: var(--font-display);
+}
+
+.prediction-insight {
+    padding: var(--space-4);
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+}
+
+.prediction-insight p {
+    font-size: 0.875rem;
+    color: var(--gray-700);
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* Health Metrics */
+.health-metrics {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.metric-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.metric-label {
+    min-width: 120px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--gray-700);
+}
+
+.metric-bar {
+    flex: 1;
+    height: 12px;
+    background: var(--gray-200);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.metric-fill {
+    height: 100%;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: var(--radius-full);
+}
+
+.metric-fill.energy {
+    background: linear-gradient(90deg, #F59E0B, #EAB308);
+}
+
+.metric-fill.focus {
+    background: linear-gradient(90deg, #6366F1, #4F46E5);
+}
+
+.metric-fill.metabolism {
+    background: linear-gradient(90deg, #10B981, #059669);
+}
+
+.metric-value {
+    min-width: 50px;
+    text-align: right;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--gray-900);
+}
+
+.correlation-note {
+    margin-top: var(--space-3);
+    font-size: 0.8125rem;
+    color: var(--gray-500);
+    font-style: italic;
+    text-align: center;
+}
+
+/* Dark Mode - Data Analytics */
+.dark-mode .analytics-card {
+    background: var(--gray-800);
+    border-color: var(--gray-700);
+}
+
+.dark-mode .card-header h3 {
+    color: white;
+}
+
+.dark-mode .data-badge {
+    background: var(--primary-900);
+    color: var(--primary-300);
+}
+
+.dark-mode .card-description {
+    color: var(--gray-400);
+}
+
+.dark-mode .symptom-item {
+    background: var(--gray-700);
+}
+
+.dark-mode .symptom-item:hover {
+    background: var(--gray-600);
+}
+
+.dark-mode .symptom-label {
+    color: var(--gray-200);
+}
+
+.dark-mode .hydration-analysis {
+    background: var(--gray-700);
+}
+
+.dark-mode .analysis-text {
+    color: var(--gray-300);
+}
+
+.dark-mode .analysis-text strong {
+    color: white;
+}
+
+.dark-mode .prediction-insight {
+    background: var(--gray-700);
+}
+
+.dark-mode .prediction-insight p {
+    color: var(--gray-300);
+}
+
+.dark-mode .metric-label {
+    color: var(--gray-300);
+}
+
+.dark-mode .metric-bar {
+    background: var(--gray-700);
+}
+
+.dark-mode .metric-value {
+    color: white;
+}
+
+.dark-mode .correlation-note {
+    color: var(--gray-400);
 }
