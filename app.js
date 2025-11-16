@@ -1001,24 +1001,46 @@ class HidratadorApp {
         this.saveToStorage();
     }
 
-    updateLevelUI() {
-        const xpNeeded = this.level * 100;
-        const xpProgress = (this.xp / xpNeeded) * 100;
+    updateWeeklyAdherence() {
+        // Calculate weekly adherence (last 7 days)
+        const today = new Date();
+        let totalGoals = 0;
+        let completedGoals = 0;
 
+        for (let i = 0; i < 7; i++) {
+            const date = new Date(today);
+            date.setDate(date.getDate() - i);
+            const dateStr = date.toDateString();
+
+            const dayHistory = this.allTimeHistory.filter(entry =>
+                new Date(entry.date).toDateString() === dateStr
+            );
+
+            const totalMl = dayHistory.reduce((sum, entry) => sum + entry.amount, 0);
+            const glasses = totalMl / this.settings.glassSize;
+
+            totalGoals++;
+            if (glasses >= this.settings.dailyGoal) {
+                completedGoals++;
+            }
+        }
+
+        const adherencePercentage = Math.round((completedGoals / totalGoals) * 100);
+
+        // Update UI
+        const adherenceEl = document.getElementById('weeklyAdherence');
+        if (adherenceEl) {
+            adherenceEl.textContent = adherencePercentage;
+        }
+
+        const xpFillEl = document.getElementById('xpFill');
+        if (xpFillEl) {
+            xpFillEl.style.width = `${adherencePercentage}%`;
+        }
+
+        // Update user level text to show plan name
         if (this.elements.userLevel) {
-            this.elements.userLevel.textContent = `Nivel ${this.level}`;
-        }
-
-        if (this.elements.xpFill) {
-            this.elements.xpFill.style.width = `${xpProgress}%`;
-        }
-
-        if (this.elements.currentXP) {
-            this.elements.currentXP.textContent = this.xp;
-        }
-
-        if (this.elements.requiredXP) {
-            this.elements.requiredXP.textContent = xpNeeded;
+            this.elements.userLevel.textContent = 'Plan Médico';
         }
     }
 
@@ -1395,7 +1417,7 @@ class HidratadorApp {
         this.updateWaterDisplay();
         this.updateProgress();
         this.updateTimeline();
-        this.updateLevelUI();
+        this.updateWeeklyAdherence();
         this.updateAchievementBadge();
         this.updateQuickStats();
     }
