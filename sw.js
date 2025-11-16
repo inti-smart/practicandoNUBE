@@ -1,9 +1,9 @@
 // ============================================
 //  HIDRATADOR ULTRA PRO - Service Worker
-//  PWA Offline Support v6.0
+//  PWA Offline Support v7.0
 // ============================================
 
-const CACHE_NAME = 'hidratador-v6-0';
+const CACHE_NAME = 'hidratador-v7-0';
 const urlsToCache = [
     '/',
     '/index.html',

@@ -28,63 +28,173 @@
         <div class="gradient-orb orb-2"></div>
     </div>
 
+    <!-- Auth Screen (Login/Register) -->
+    <div class="auth-overlay" id="authOverlay">
+        <div class="auth-container">
+            <div class="auth-header">
+                <div class="auth-logo">💧</div>
+                <h1>Hidratador Pro</h1>
+                <p>Tu asistente personal de hidratación</p>
+            </div>
+
+            <!-- Login Form -->
+            <div class="auth-form" id="loginForm">
+                <h2>Iniciar Sesión</h2>
+                <div class="form-group">
+                    <label for="loginEmail">Correo electrónico</label>
+                    <input type="email" id="loginEmail" placeholder="tu@email.com" autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Contraseña</label>
+                    <input type="password" id="loginPassword" placeholder="Tu contraseña" autocomplete="current-password">
+                </div>
+                <button class="auth-btn primary" id="loginBtn">Iniciar Sesión</button>
+                <p class="auth-switch">
+                    ¿No tienes cuenta? <a href="#" id="showRegister">Regístrate</a>
+                </p>
+            </div>
+
+            <!-- Register Form -->
+            <div class="auth-form hidden" id="registerForm">
+                <h2>Crear Cuenta</h2>
+                <div class="form-group">
+                    <label for="registerName">Nombre</label>
+                    <input type="text" id="registerName" placeholder="Tu nombre" autocomplete="name">
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Correo electrónico</label>
+                    <input type="email" id="registerEmail" placeholder="tu@email.com" autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Contraseña</label>
+                    <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
+                </div>
+                <div class="form-group">
+                    <label for="registerPasswordConfirm">Confirmar contraseña</label>
+                    <input type="password" id="registerPasswordConfirm" placeholder="Repite tu contraseña" autocomplete="new-password">
+                </div>
+                <button class="auth-btn primary" id="registerBtn">Crear Cuenta</button>
+                <p class="auth-switch">
+                    ¿Ya tienes cuenta? <a href="#" id="showLogin">Inicia sesión</a>
+                </p>
+            </div>
+
+            <!-- Demo Mode -->
+            <div class="demo-mode-divider">
+                <span>o</span>
+            </div>
+            <button class="auth-btn demo" id="demoModeBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                    <polyline points="10 17 15 12 10 7"/>
+                    <line x1="15" y1="12" x2="3" y2="12"/>
+                </svg>
+                Probar sin registro
+            </button>
+        </div>
+    </div>
+
     <!-- Onboarding Screen -->
     <div class="onboarding-overlay" id="onboardingOverlay">
         <div class="onboarding-container">
-            <!-- Step 1 -->
+            <!-- Step 1: Bienvenida (Acortado) -->
             <div class="onboarding-step active" data-step="1">
                 <div class="onboarding-icon">💧</div>
                 <h2>Bienvenido a Hidratador Pro</h2>
-                <p>La forma más inteligente de mantener tu hidratación diaria</p>
-                <div class="onboarding-features">
-                    <div class="feature-item">✅ Seguimiento en tiempo real</div>
-                    <div class="feature-item">✅ Recordatorios inteligentes</div>
-                    <div class="feature-item">✅ Sistema de niveles y logros</div>
-                </div>
+                <p class="onboarding-subtitle">Tu asistente personal de hidratación inteligente</p>
             </div>
 
-            <!-- Step 2 -->
+            <!-- Step 2: Perfil Completo -->
             <div class="onboarding-step" data-step="2">
-                <div class="onboarding-icon">🎯</div>
-                <h2>Establece tu Meta</h2>
-                <p>¿Cuántos vasos de agua quieres tomar al día?</p>
-                <div class="goal-selector">
-                    <button class="goal-btn" data-goal="6">6 vasos</button>
-                    <button class="goal-btn active" data-goal="8">8 vasos</button>
-                    <button class="goal-btn" data-goal="10">10 vasos</button>
-                    <button class="goal-btn" data-goal="12">12 vasos</button>
-                </div>
-                <p class="goal-info">Recomendado: 8 vasos (2 litros) diarios</p>
-            </div>
-
-            <!-- Step 3 -->
-            <div class="onboarding-step" data-step="3">
                 <div class="onboarding-icon">👤</div>
-                <h2>Personaliza tu Perfil</h2>
-                <p>Ayúdanos a conocerte mejor</p>
+                <h2>Tu Perfil</h2>
+                <p>Información básica para cálculos personalizados</p>
                 <div class="profile-setup">
-                    <input type="text" id="onboardingName" placeholder="Tu nombre" maxlength="20">
-                    <div class="weight-input">
-                        <label>Peso (kg):</label>
-                        <input type="number" id="onboardingWeight" placeholder="70" min="30" max="200">
+                    <div class="form-row">
+                        <input type="text" id="onboardingName" placeholder="Tu nombre" maxlength="20">
                     </div>
-                    <div class="activity-selector">
-                        <label>Nivel de actividad:</label>
-                        <select id="onboardingActivity">
-                            <option value="sedentary">Sedentario</option>
-                            <option value="light" selected>Actividad ligera</option>
-                            <option value="moderate">Moderado</option>
-                            <option value="active">Muy activo</option>
+                    <div class="form-row-split">
+                        <div class="form-group">
+                            <label>Edad</label>
+                            <input type="number" id="onboardingAge" placeholder="25" min="10" max="120">
+                        </div>
+                        <div class="form-group">
+                            <label>Peso (kg)</label>
+                            <input type="number" id="onboardingWeight" placeholder="70" min="30" max="200">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label>Altura (cm)</label>
+                        <input type="number" id="onboardingHeight" placeholder="170" min="100" max="250">
+                    </div>
+                    <div class="form-row">
+                        <label>Sexo</label>
+                        <select id="onboardingGender">
+                            <option value="male">Masculino</option>
+                            <option value="female">Femenino</option>
+                            <option value="other">Otro</option>
                         </select>
                     </div>
                 </div>
             </div>
 
-            <!-- Step 4 -->
+            <!-- Step 3: Calculador Contextual NUEVO -->
+            <div class="onboarding-step" data-step="3">
+                <div class="onboarding-icon">🧮</div>
+                <h2>Contexto de Hidratación</h2>
+                <p>El agua que necesitas varía según tu situación</p>
+                <div class="context-setup">
+                    <div class="form-row">
+                        <label>¿Dónde pasas la mayor parte del día?</label>
+                        <select id="onboardingLocation">
+                            <option value="office">Oficina / Casa</option>
+                            <option value="outdoor">Exterior / Caminando</option>
+                            <option value="gym">Gimnasio / Deporte</option>
+                            <option value="beach">Playa / Piscina</option>
+                            <option value="travel">Viajando</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <label>Nivel de actividad física diaria</label>
+                        <select id="onboardingActivity">
+                            <option value="sedentary">Sedentario (poco movimiento)</option>
+                            <option value="light">Ligero (caminatas ocasionales)</option>
+                            <option value="moderate" selected>Moderado (ejercicio 3-4 días)</option>
+                            <option value="active">Activo (ejercicio diario)</option>
+                            <option value="intense">Muy activo (atleta)</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <label>Clima habitual</label>
+                        <select id="onboardingClimate">
+                            <option value="cold">Frío</option>
+                            <option value="temperate" selected>Templado</option>
+                            <option value="warm">Cálido</option>
+                            <option value="hot">Muy caluroso</option>
+                        </select>
+                    </div>
+                    <div class="form-row checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="onboardingPregnant">
+                            <span>Embarazo o lactancia</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="onboardingCaffeine">
+                            <span>Consumo frecuente de café/té</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="onboardingAlcohol">
+                            <span>Consumo regular de alcohol</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Notificaciones -->
             <div class="onboarding-step" data-step="4">
                 <div class="onboarding-icon">🔔</div>
-                <h2>Activa las Notificaciones</h2>
-                <p>Recibe recordatorios amigables para mantenerte hidratado</p>
+                <h2>Recordatorios Inteligentes</h2>
+                <p>Te ayudaremos a no olvidar hidratarte</p>
                 <button class="notification-btn" id="enableNotificationsBtn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
@@ -545,9 +655,9 @@
                 <div class="settings-group">
                     <h3>ℹ️ Acerca de</h3>
                     <div class="about-info">
-                        <p><strong>Hidratador Pro</strong> v2.0</p>
-                        <p>La aplicación más completa para tu hidratación</p>
-                        <p class="version-info">Desarrollado con 💙 por Claude Code</p>
+                        <p><strong>Hidratador Pro</strong> v7.0</p>
+                        <p>La aplicación más completa para tu hidratación inteligente</p>
+                        <p class="version-info">© 2025 Hidratador Pro. Todos los derechos reservados.</p>
                     </div>
                 </div>
 

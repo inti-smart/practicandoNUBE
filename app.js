@@ -1,6 +1,6 @@
 // ============================================
-//  HIDRATADOR ULTRA PRO v6.0 - EMPRESARIAL COMPLETO
-//  Multi-usuario, PWA, Gráficos, Foto perfil
+//  HIDRATADOR ULTRA PRO v7.0 - PROFESIONAL VENDIBLE
+//  Auth, Calculador Contextual, Funcionalidades Avanzadas
 // ============================================
 
 class HidratadorApp {
@@ -68,6 +68,20 @@ class HidratadorApp {
         this.weeklyData = []; // Para gráficos
         this.monthlyData = []; // Para gráficos
 
+        // CONTEXTUAL PROFILE - v7.0
+        this.age = 25;
+        this.height = 170; // cm
+        this.gender = 'male';
+        this.location = 'office'; // office, outdoor, gym, beach, travel
+        this.climate = 'temperate'; // cold, temperate, warm, hot
+        this.isPregnant = false;
+        this.consumesCaffeine = false;
+        this.consumesAlcohol = false;
+
+        // AUTH STATE
+        this.isDemoMode = false;
+        this.hasCompletedAuth = false;
+
         // UI Elements Cache
         this.elements = {};
 
@@ -83,7 +97,7 @@ class HidratadorApp {
     // ============================================
 
     init() {
-        console.log('🚀 Hidratador Ultra Pro v6.0 - Empresarial Completo');
+        console.log('🚀 Hidratador Ultra Pro v7.0 - Profesional Vendible');
 
         this.cacheElements();
 
@@ -92,6 +106,13 @@ class HidratadorApp {
 
         // Load storage (user-specific if logged in)
         this.loadFromStorage();
+
+        // Check if user has authenticated
+        if (!this.hasCompletedAuth) {
+            this.showAuthScreen();
+            this.setupAuthListeners();
+            return; // Wait for auth completion
+        }
 
         // Check onboarding
         if (!this.hasCompletedOnboarding) {
@@ -113,7 +134,7 @@ class HidratadorApp {
             this.generateDailyTip();
             this.calculatePersonalizedGoal();
 
-            // PROFILE & CHARTS - v6.0
+            // PROFILE & CHARTS
             this.setupPhotoUpload();
             this.updateProfilePhoto();
 
@@ -123,7 +144,7 @@ class HidratadorApp {
             }
         }
 
-        console.log('✅ App initialized - v6.0 Empresarial Completo');
+        console.log('✅ App initialized - v7.0 Profesional Vendible');
     }
 
     cacheElements() {
@@ -459,6 +480,20 @@ class HidratadorApp {
 
     completeOnboarding() {
         this.hasCompletedOnboarding = true;
+
+        // Save contextual profile data from onboarding
+        this.age = parseInt(document.getElementById('onboardingAge')?.value) || 25;
+        this.height = parseInt(document.getElementById('onboardingHeight')?.value) || 170;
+        this.gender = document.getElementById('onboardingGender')?.value || 'male';
+        this.location = document.getElementById('onboardingLocation')?.value || 'office';
+        this.climate = document.getElementById('onboardingClimate')?.value || 'temperate';
+        this.isPregnant = document.getElementById('onboardingPregnant')?.checked || false;
+        this.consumesCaffeine = document.getElementById('onboardingCaffeine')?.checked || false;
+        this.consumesAlcohol = document.getElementById('onboardingAlcohol')?.value || false;
+
+        // Calculate personalized goal based on context
+        this.calculateContextualGoal();
+
         this.saveToStorage();
         this.hideOnboarding();
         this.setupEventListeners();
@@ -469,6 +504,247 @@ class HidratadorApp {
         this.renderCalendar();
         this.renderAchievements();
         this.showToast('¡Bienvenido a Hidratador Ultra Pro! 🎉');
+    }
+
+    // ============================================
+    // AUTHENTICATION SYSTEM - v7.0
+    // ============================================
+
+    showAuthScreen() {
+        const authOverlay = document.getElementById('authOverlay');
+        if (authOverlay) {
+            authOverlay.classList.remove('hidden');
+        }
+    }
+
+    hideAuthScreen() {
+        const authOverlay = document.getElementById('authOverlay');
+        if (authOverlay) {
+            authOverlay.classList.add('hidden');
+        }
+    }
+
+    setupAuthListeners() {
+        // Switch between login and register
+        document.getElementById('showRegister')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+        });
+
+        document.getElementById('showLogin')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+        });
+
+        // Login button
+        document.getElementById('loginBtn')?.addEventListener('click', () => {
+            this.handleLogin();
+        });
+
+        // Register button
+        document.getElementById('registerBtn')?.addEventListener('click', () => {
+            this.handleRegister();
+        });
+
+        // Demo mode button
+        document.getElementById('demoModeBtn')?.addEventListener('click', () => {
+            this.handleDemoMode();
+        });
+
+        // Enter key handlers
+        const loginInputs = document.querySelectorAll('#loginForm input');
+        loginInputs.forEach(input => {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') this.handleLogin();
+            });
+        });
+
+        const registerInputs = document.querySelectorAll('#registerForm input');
+        registerInputs.forEach(input => {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') this.handleRegister();
+            });
+        });
+    }
+
+    handleLogin() {
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+
+        if (!email || !password) {
+            this.showToast('❌ Por favor completa todos los campos');
+            return;
+        }
+
+        if (!this.validateEmail(email)) {
+            this.showToast('❌ Email inválido');
+            return;
+        }
+
+        // Find user
+        const user = this.users.find(u => u.email === email && u.password === password);
+
+        if (user) {
+            this.loginUser(user.id);
+            this.completeAuth();
+        } else {
+            this.showToast('❌ Credenciales incorrectas');
+        }
+    }
+
+    handleRegister() {
+        const name = document.getElementById('registerName').value.trim();
+        const email = document.getElementById('registerEmail').value.trim();
+        const password = document.getElementById('registerPassword').value;
+        const confirmPassword = document.getElementById('registerPasswordConfirm').value;
+
+        if (!name || !email || !password || !confirmPassword) {
+            this.showToast('❌ Por favor completa todos los campos');
+            return;
+        }
+
+        if (!this.validateEmail(email)) {
+            this.showToast('❌ Email inválido');
+            return;
+        }
+
+        if (password.length < 6) {
+            this.showToast('❌ La contraseña debe tener al menos 6 caracteres');
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            this.showToast('❌ Las contraseñas no coinciden');
+            return;
+        }
+
+        // Check if user already exists
+        if (this.users.find(u => u.email === email)) {
+            this.showToast('❌ Este email ya está registrado');
+            return;
+        }
+
+        // Create new user
+        const newUser = this.createUser(name, email);
+        newUser.password = password; // In production, use hashing
+        this.saveUsers();
+
+        // Auto login
+        this.loginUser(newUser.id);
+        this.settings.userName = name;
+        this.completeAuth();
+    }
+
+    handleDemoMode() {
+        this.isDemoMode = true;
+        this.settings.userName = 'Usuario Demo';
+        this.completeAuth();
+    }
+
+    completeAuth() {
+        this.hasCompletedAuth = true;
+        this.hideAuthScreen();
+        this.saveToStorage();
+
+        // Continue with onboarding or main app
+        if (!this.hasCompletedOnboarding) {
+            this.showOnboarding();
+        } else {
+            // Reinitialize app
+            this.setupEventListeners();
+            this.updateAllUI();
+            this.startDailyCheck();
+            this.generateDailyChallenge();
+            this.applyDarkMode();
+            this.startReminders();
+            this.renderCalendar();
+            this.renderAchievements();
+            this.updateMonthlyStats();
+            this.checkDailyCheckIn();
+            this.generateDailyTip();
+            this.calculatePersonalizedGoal();
+            this.setupPhotoUpload();
+            this.updateProfilePhoto();
+            if (document.getElementById('weeklyChart')) {
+                this.renderWeeklyChart();
+            }
+        }
+    }
+
+    validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+
+    // ============================================
+    // CONTEXTUAL CALCULATOR - v7.0
+    // ============================================
+
+    calculateContextualGoal() {
+        // Base calculation: weight * 35ml (standard medical formula)
+        let baseWater = this.settings.weight * 35; // ml per day
+
+        // Age adjustment
+        if (this.age > 65) {
+            baseWater *= 0.95; // Elderly need slightly less
+        } else if (this.age < 18) {
+            baseWater *= 1.1; // Youth need more
+        }
+
+        // Gender adjustment (males typically need more)
+        if (this.gender === 'female') {
+            baseWater *= 0.95;
+        }
+
+        // Activity level adjustment
+        const activityMultipliers = {
+            'sedentary': 1.0,
+            'light': 1.1,
+            'moderate': 1.3,
+            'active': 1.5,
+            'intense': 1.8
+        };
+        baseWater *= activityMultipliers[this.settings.activity] || 1.0;
+
+        // Location/Context adjustment
+        const locationMultipliers = {
+            'office': 1.0,
+            'outdoor': 1.2,
+            'gym': 1.4,
+            'beach': 1.3,
+            'travel': 1.1
+        };
+        baseWater *= locationMultipliers[this.location] || 1.0;
+
+        // Climate adjustment
+        const climateMultipliers = {
+            'cold': 0.95,
+            'temperate': 1.0,
+            'warm': 1.15,
+            'hot': 1.3
+        };
+        baseWater *= climateMultipliers[this.climate] || 1.0;
+
+        // Special conditions
+        if (this.isPregnant) {
+            baseWater += 300; // Extra 300ml for pregnancy/lactation
+        }
+        if (this.consumesCaffeine) {
+            baseWater *= 1.1; // Caffeine is dehydrating
+        }
+        if (this.consumesAlcohol) {
+            baseWater *= 1.15; // Alcohol is very dehydrating
+        }
+
+        // Convert to glasses (assuming 250ml per glass)
+        const goalInGlasses = Math.round(baseWater / this.settings.glassSize);
+
+        // Update settings
+        this.settings.dailyGoal = Math.max(6, Math.min(goalInGlasses, 16)); // Between 6-16 glasses
+
+        console.log(`💧 Calculated contextual goal: ${this.settings.dailyGoal} glasses (${baseWater.toFixed(0)}ml)`);
     }
 
     // ============================================
@@ -1573,6 +1849,28 @@ class HidratadorApp {
                 this.checkInStreak = parsed.checkInStreak || 0;
                 this.streakFreezes = parsed.streakFreezes !== undefined ? parsed.streakFreezes : 3;
             }
+
+            // AUTH STATE - v7.0
+            const authData = localStorage.getItem('auth_data');
+            if (authData) {
+                const parsed = JSON.parse(authData);
+                this.hasCompletedAuth = parsed.hasCompletedAuth || false;
+                this.isDemoMode = parsed.isDemoMode || false;
+            }
+
+            // CONTEXTUAL PROFILE - v7.0
+            const profileData = localStorage.getItem('contextual_profile');
+            if (profileData) {
+                const parsed = JSON.parse(profileData);
+                this.age = parsed.age || 25;
+                this.height = parsed.height || 170;
+                this.gender = parsed.gender || 'male';
+                this.location = parsed.location || 'office';
+                this.climate = parsed.climate || 'temperate';
+                this.isPregnant = parsed.isPregnant || false;
+                this.consumesCaffeine = parsed.consumesCaffeine || false;
+                this.consumesAlcohol = parsed.consumesAlcohol || false;
+            }
         } catch (error) {
             console.error('Error loading from storage:', error);
         }
@@ -1611,6 +1909,26 @@ class HidratadorApp {
                 streakFreezes: this.streakFreezes
             };
             localStorage.setItem('business_data', JSON.stringify(businessData));
+
+            // AUTH STATE - v7.0
+            const authData = {
+                hasCompletedAuth: this.hasCompletedAuth,
+                isDemoMode: this.isDemoMode
+            };
+            localStorage.setItem('auth_data', JSON.stringify(authData));
+
+            // CONTEXTUAL PROFILE - v7.0
+            const profileData = {
+                age: this.age,
+                height: this.height,
+                gender: this.gender,
+                location: this.location,
+                climate: this.climate,
+                isPregnant: this.isPregnant,
+                consumesCaffeine: this.consumesCaffeine,
+                consumesAlcohol: this.consumesAlcohol
+            };
+            localStorage.setItem('contextual_profile', JSON.stringify(profileData));
 
             // MULTI-USER: Save current user data if logged in
             if (this.isLoggedIn && this.currentUser) {

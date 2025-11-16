@@ -4,41 +4,41 @@
    ============================================ */
 
 :root {
-    /* Premium Neutral Palette - Professional */
-    --primary-50: #F8FAFC;
-    --primary-100: #F1F5F9;
-    --primary-200: #E2E8F0;
-    --primary-300: #CBD5E1;
-    --primary-400: #94A3B8;
-    --primary-500: #64748B;
-    --primary-600: #475569;
-    --primary-700: #334155;
-    --primary-800: #1E293B;
-    --primary-900: #0F172A;
+    /* Primary - Deep Blue (Professional) */
+    --primary-50: #EFF6FF;
+    --primary-100: #DBEAFE;
+    --primary-200: #BFDBFE;
+    --primary-300: #93C5FD;
+    --primary-400: #60A5FA;
+    --primary-500: #3B82F6;
+    --primary-600: #2563EB;
+    --primary-700: #1D4ED8;
+    --primary-800: #1E40AF;
+    --primary-900: #1E3A8A;
 
-    /* Accent - Subtle Teal */
-    --accent-50: #F0FDFA;
-    --accent-100: #CCFBF1;
-    --accent-200: #99F6E4;
-    --accent-300: #5EEAD4;
-    --accent-400: #2DD4BF;
-    --accent-500: #14B8A6;
-    --accent-600: #0D9488;
-    --accent-700: #0F766E;
-    --accent-800: #115E59;
-    --accent-900: #134E4A;
+    /* Accent - Deep Indigo */
+    --accent-50: #EEF2FF;
+    --accent-100: #E0E7FF;
+    --accent-200: #C7D2FE;
+    --accent-300: #A5B4FC;
+    --accent-400: #818CF8;
+    --accent-500: #6366F1;
+    --accent-600: #4F46E5;
+    --accent-700: #4338CA;
+    --accent-800: #3730A3;
+    --accent-900: #312E81;
 
-    /* Warm Gray - Background */
-    --gray-50: #FAFAF9;
-    --gray-100: #F5F5F4;
-    --gray-200: #E7E5E4;
-    --gray-300: #D6D3D1;
-    --gray-400: #A8A29E;
-    --gray-500: #78716C;
-    --gray-600: #57534E;
-    --gray-700: #44403C;
-    --gray-800: #292524;
-    --gray-900: #1C1917;
+    /* Neutral Gray - Professional */
+    --gray-50: #F9FAFB;
+    --gray-100: #F3F4F6;
+    --gray-200: #E5E7EB;
+    --gray-300: #D1D5DB;
+    --gray-400: #9CA3AF;
+    --gray-500: #6B7280;
+    --gray-600: #4B5563;
+    --gray-700: #374151;
+    --gray-800: #1F2937;
+    --gray-900: #111827;
 
     /* Status Colors */
     --success: #10B981;
@@ -50,12 +50,12 @@
     --info: #3B82F6;
     --info-light: #DBEAFE;
 
-    /* Premium Gradients - Neutral */
-    --gradient-primary: linear-gradient(135deg, #64748B 0%, #475569 100%);
-    --gradient-accent: linear-gradient(135deg, #14B8A6 0%, #0D9488 100%);
-    --gradient-background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 50%, #E2E8F0 100%);
-    --gradient-card: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
-    --gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%);
+    /* Premium Gradients - Deep Blue */
+    --gradient-primary: linear-gradient(135deg, #2563EB 0%, #1E40AF 100%);
+    --gradient-accent: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
+    --gradient-background: linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 50%, #E5E7EB 100%);
+    --gradient-card: linear-gradient(135deg, #FFFFFF 0%, #F9FAFB 100%);
+    --gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.90) 100%);
 
     /* Shadows - Professional Depth */
     --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -3441,4 +3441,369 @@ input[type="checkbox"]:checked + .toggle-switch::after {
 .btn-hover-lift:active {
     transform: translateY(0);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================
+   AUTH SCREEN - Login/Register
+   ============================================ */
+
+.auth-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--gradient-background);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    opacity: 1;
+    visibility: visible;
+    transition: all 0.3s ease;
+}
+
+.auth-overlay.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.auth-container {
+    background: white;
+    border-radius: var(--radius-2xl);
+    padding: var(--space-8);
+    width: 90%;
+    max-width: 420px;
+    box-shadow: var(--shadow-2xl);
+    animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: var(--space-8);
+}
+
+.auth-logo {
+    font-size: 3.5rem;
+    margin-bottom: var(--space-3);
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.auth-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--primary-700);
+    margin-bottom: var(--space-2);
+}
+
+.auth-header p {
+    font-size: 0.9375rem;
+    color: var(--gray-500);
+}
+
+.auth-form {
+    display: block;
+}
+
+.auth-form.hidden {
+    display: none;
+}
+
+.auth-form h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--gray-800);
+    margin-bottom: var(--space-6);
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: var(--space-4);
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: var(--space-2);
+}
+
+.form-group input {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    font-size: 0.9375rem;
+    transition: all var(--transition-base);
+    font-family: var(--font-primary);
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.auth-btn {
+    width: 100%;
+    padding: var(--space-4);
+    border: none;
+    border-radius: var(--radius-lg);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    font-family: var(--font-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+}
+
+.auth-btn.primary {
+    background: var(--gradient-primary);
+    color: white;
+    margin-top: var(--space-4);
+    box-shadow: var(--shadow-md);
+}
+
+.auth-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.auth-btn.primary:active {
+    transform: translateY(0);
+}
+
+.auth-btn.demo {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    border: 2px solid var(--gray-300);
+}
+
+.auth-btn.demo:hover {
+    background: var(--gray-200);
+    border-color: var(--gray-400);
+}
+
+.auth-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.auth-switch {
+    text-align: center;
+    margin-top: var(--space-4);
+    font-size: 0.875rem;
+    color: var(--gray-600);
+}
+
+.auth-switch a {
+    color: var(--primary-600);
+    font-weight: 600;
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.auth-switch a:hover {
+    color: var(--primary-700);
+    text-decoration: underline;
+}
+
+.demo-mode-divider {
+    position: relative;
+    text-align: center;
+    margin: var(--space-6) 0;
+}
+
+.demo-mode-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--gray-300);
+    transform: translateY(-50%);
+}
+
+.demo-mode-divider span {
+    position: relative;
+    background: white;
+    padding: 0 var(--space-4);
+    color: var(--gray-500);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Enhanced Onboarding Styles */
+.onboarding-subtitle {
+    font-size: 1rem !important;
+    color: var(--gray-600) !important;
+    margin-top: var(--space-4);
+}
+
+.form-row {
+    margin-bottom: var(--space-4);
+}
+
+.form-row label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: var(--space-2);
+}
+
+.form-row input,
+.form-row select {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    font-size: 0.9375rem;
+    font-family: var(--font-primary);
+    transition: all var(--transition-base);
+}
+
+.form-row input:focus,
+.form-row select:focus {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-row-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    cursor: pointer;
+    padding: var(--space-2);
+    border-radius: var(--radius-md);
+    transition: background var(--transition-fast);
+}
+
+.checkbox-label:hover {
+    background: var(--gray-50);
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.checkbox-label span {
+    font-size: 0.9375rem;
+    color: var(--gray-700);
+}
+
+.context-setup {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: var(--space-2);
+}
+
+/* Dark Mode for Auth */
+.dark-mode .auth-overlay {
+    background: linear-gradient(135deg, var(--gray-900) 0%, var(--gray-800) 100%);
+}
+
+.dark-mode .auth-container {
+    background: var(--gray-800);
+}
+
+.dark-mode .auth-header h1 {
+    color: white;
+}
+
+.dark-mode .auth-header p {
+    color: var(--gray-400);
+}
+
+.dark-mode .auth-form h2 {
+    color: white;
+}
+
+.dark-mode .form-group label,
+.dark-mode .form-row label {
+    color: var(--gray-300);
+}
+
+.dark-mode .form-group input,
+.dark-mode .form-row input,
+.dark-mode .form-row select {
+    background: var(--gray-700);
+    border-color: var(--gray-600);
+    color: white;
+}
+
+.dark-mode .form-group input:focus,
+.dark-mode .form-row input:focus,
+.dark-mode .form-row select:focus {
+    border-color: var(--primary-400);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.dark-mode .auth-btn.demo {
+    background: var(--gray-700);
+    color: var(--gray-200);
+    border-color: var(--gray-600);
+}
+
+.dark-mode .auth-btn.demo:hover {
+    background: var(--gray-600);
+}
+
+.dark-mode .demo-mode-divider::before {
+    background: var(--gray-600);
+}
+
+.dark-mode .demo-mode-divider span {
+    background: var(--gray-800);
+    color: var(--gray-400);
+}
+
+.dark-mode .checkbox-label span {
+    color: var(--gray-300);
+}
+
+.dark-mode .checkbox-label:hover {
+    background: var(--gray-700);
 }
