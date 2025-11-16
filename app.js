@@ -476,6 +476,76 @@ class HidratadorApp {
         if (this.elements.onboardingNext) {
             this.elements.onboardingNext.textContent = step === 4 ? 'Comenzar' : 'Siguiente';
         }
+
+        // STEP 4: Calculate and show personalized goal
+        if (step === 4) {
+            this.previewCalculatedGoal();
+        }
+    }
+
+    previewCalculatedGoal() {
+        // Get values from onboarding form
+        const tempWeight = parseInt(document.getElementById('onboardingWeight')?.value) || 70;
+        const tempAge = parseInt(document.getElementById('onboardingAge')?.value) || 25;
+        const tempGender = document.getElementById('onboardingGender')?.value || 'male';
+        const tempActivity = document.getElementById('onboardingActivity')?.value || 'moderate';
+        const tempLocation = document.getElementById('onboardingLocation')?.value || 'office';
+        const tempClimate = document.getElementById('onboardingClimate')?.value || 'temperate';
+        const tempCaffeine = document.getElementById('onboardingCaffeine')?.checked || false;
+        const tempAlcohol = document.getElementById('onboardingAlcohol')?.checked || false;
+
+        // Calculate
+        let baseWater = tempWeight * 35; // ml
+
+        // Adjustments
+        if (tempAge > 65) baseWater *= 0.95;
+        else if (tempAge < 18) baseWater *= 1.1;
+
+        if (tempGender === 'female') baseWater *= 0.95;
+
+        const activityMultipliers = {
+            'sedentary': 1.0,
+            'light': 1.1,
+            'moderate': 1.3,
+            'active': 1.5,
+            'intense': 1.8
+        };
+        baseWater *= activityMultipliers[tempActivity] || 1.3;
+
+        const locationMultipliers = {
+            'office': 1.0,
+            'outdoor': 1.2,
+            'gym': 1.4,
+            'beach': 1.3,
+            'travel': 1.1
+        };
+        baseWater *= locationMultipliers[tempLocation] || 1.0;
+
+        const climateMultipliers = {
+            'cold': 0.95,
+            'temperate': 1.0,
+            'warm': 1.15,
+            'hot': 1.3
+        };
+        baseWater *= climateMultipliers[tempClimate] || 1.0;
+
+        if (tempCaffeine) baseWater *= 1.1;
+        if (tempAlcohol) baseWater *= 1.15;
+
+        const goalInGlasses = Math.round(baseWater / 250);
+        const finalGoal = Math.max(6, Math.min(goalInGlasses, 16));
+        const liters = (finalGoal * 0.25).toFixed(1);
+
+        // Update UI
+        const calculatedGoalEl = document.getElementById('calculatedGoal');
+        if (calculatedGoalEl) {
+            calculatedGoalEl.textContent = `${finalGoal} vasos`;
+        }
+
+        const analysisDetailEl = document.querySelector('.analysis-detail');
+        if (analysisDetailEl) {
+            analysisDetailEl.textContent = `Aproximadamente ${liters} litros al día`;
+        }
     }
 
     completeOnboarding() {
@@ -489,7 +559,11 @@ class HidratadorApp {
         this.climate = document.getElementById('onboardingClimate')?.value || 'temperate';
         this.isPregnant = document.getElementById('onboardingPregnant')?.checked || false;
         this.consumesCaffeine = document.getElementById('onboardingCaffeine')?.checked || false;
-        this.consumesAlcohol = document.getElementById('onboardingAlcohol')?.value || false;
+        this.consumesAlcohol = document.getElementById('onboardingAlcohol')?.checked || false;
+
+        // Check notifications preference from checkbox
+        const notificationsEnabled = document.getElementById('enableNotificationsCheckbox')?.checked || false;
+        this.settings.notificationsEnabled = notificationsEnabled;
 
         // Calculate personalized goal based on context
         this.calculateContextualGoal();
@@ -503,7 +577,7 @@ class HidratadorApp {
         this.startReminders();
         this.renderCalendar();
         this.renderAchievements();
-        this.showToast('¡Bienvenido a Hidratador Ultra Pro! 🎉');
+        this.showToast('✅ Perfil médico configurado');
     }
 
     // ============================================

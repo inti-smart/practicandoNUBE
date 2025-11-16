@@ -3807,3 +3807,267 @@ input[type="checkbox"]:checked + .toggle-switch::after {
 .dark-mode .checkbox-label:hover {
     background: var(--gray-700);
 }
+
+/* ============================================
+   ONBOARDING CIENTÍFICO - Health Facts
+   ============================================ */
+
+.health-alert-icon {
+    font-size: 4rem;
+    margin-bottom: var(--space-4);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.health-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: var(--space-6);
+    line-height: 1.3;
+}
+
+.health-facts {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+}
+
+.health-fact {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background: var(--gradient-card);
+    border-radius: var(--radius-xl);
+    border: 2px solid var(--primary-200);
+    transition: all var(--transition-base);
+}
+
+.health-fact:hover {
+    border-color: var(--primary-400);
+    transform: translateX(4px);
+}
+
+.fact-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+}
+
+.fact-content {
+    flex: 1;
+}
+
+.fact-content strong {
+    display: block;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--primary-700);
+    margin-bottom: var(--space-1);
+}
+
+.fact-content p {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--gray-700);
+    margin: 0;
+}
+
+.scientific-note {
+    text-align: center;
+    font-size: 0.8125rem;
+    color: var(--gray-500);
+    font-style: italic;
+    margin-top: var(--space-4);
+}
+
+/* Analysis Preview */
+.analysis-preview {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    margin-bottom: var(--space-5);
+}
+
+.analysis-card {
+    background: var(--gradient-accent);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    text-align: center;
+    color: white;
+}
+
+.analysis-card h3 {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    margin-bottom: var(--space-3);
+    opacity: 0.9;
+}
+
+.big-number {
+    font-size: 3rem;
+    font-weight: 800;
+    font-family: var(--font-display);
+    margin: var(--space-3) 0;
+}
+
+.analysis-detail {
+    font-size: 0.875rem;
+    opacity: 0.9;
+}
+
+.health-benefits {
+    background: var(--gray-50);
+    border-radius: var(--radius-xl);
+    padding: var(--space-5);
+}
+
+.health-benefits h4 {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--gray-800);
+    margin-bottom: var(--space-3);
+}
+
+.benefits-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.benefits-list li {
+    font-size: 0.875rem;
+    color: var(--gray-700);
+    line-height: 1.5;
+}
+
+.notification-option {
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--gray-200);
+}
+
+/* Dark Mode - Scientific Onboarding */
+.dark-mode .health-title {
+    color: white;
+}
+
+.dark-mode .health-fact {
+    background: var(--gray-800);
+    border-color: var(--gray-700);
+}
+
+.dark-mode .health-fact:hover {
+    border-color: var(--primary-600);
+}
+
+.dark-mode .fact-content strong {
+    color: var(--primary-400);
+}
+
+.dark-mode .fact-content p {
+    color: var(--gray-300);
+}
+
+.dark-mode .scientific-note {
+    color: var(--gray-400);
+}
+
+.dark-mode .health-benefits {
+    background: var(--gray-800);
+    border: 1px solid var(--gray-700);
+}
+
+.dark-mode .health-benefits h4 {
+    color: white;
+}
+
+.dark-mode .benefits-list li {
+    color: var(--gray-300);
+}
+
+.dark-mode .notification-option {
+    border-top-color: var(--gray-700);
+}
+
+/* ============================================
+   TIPOGRAFÍA PROFESIONAL MEJORADA
+   ============================================ */
+
+body {
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    line-height: 1.3;
+    font-family: var(--font-display);
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: 800;
+}
+
+h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+p {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+}
+
+/* Professional Button Improvements */
+button {
+    font-family: var(--font-primary);
+    letter-spacing: 0.01em;
+}
+
+.primary-btn,
+.auth-btn.primary {
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+/* Input Improvements */
+input,
+select,
+textarea {
+    font-family: var(--font-primary);
+    font-size: 0.9375rem;
+}
+
+/* Labels Professional */
+label {
+    font-family: var(--font-primary);
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}

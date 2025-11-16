@@ -97,18 +97,41 @@
     <!-- Onboarding Screen -->
     <div class="onboarding-overlay" id="onboardingOverlay">
         <div class="onboarding-container">
-            <!-- Step 1: Bienvenida (Acortado) -->
+            <!-- Step 1: Problema Científico -->
             <div class="onboarding-step active" data-step="1">
-                <div class="onboarding-icon">💧</div>
-                <h2>Bienvenido a Hidratador Pro</h2>
-                <p class="onboarding-subtitle">Tu asistente personal de hidratación inteligente</p>
+                <div class="health-alert-icon">⚠️</div>
+                <h2 class="health-title">¿Sabías esto sobre la deshidratación?</h2>
+                <div class="health-facts">
+                    <div class="health-fact">
+                        <span class="fact-icon">🧠</span>
+                        <div class="fact-content">
+                            <strong>Rendimiento Cognitivo</strong>
+                            <p>Solo 2% de deshidratación reduce tu concentración en un 20%</p>
+                        </div>
+                    </div>
+                    <div class="health-fact">
+                        <span class="fact-icon">💪</span>
+                        <div class="fact-content">
+                            <strong>Rendimiento Físico</strong>
+                            <p>La falta de agua reduce tu fuerza muscular hasta en 30%</p>
+                        </div>
+                    </div>
+                    <div class="health-fact">
+                        <span class="fact-icon">❤️</span>
+                        <div class="fact-content">
+                            <strong>Salud Cardiovascular</strong>
+                            <p>El 75% de personas está crónicamente deshidratada</p>
+                        </div>
+                    </div>
+                </div>
+                <p class="scientific-note">📊 Fuente: Medicina deportiva y nutrición clínica</p>
             </div>
 
-            <!-- Step 2: Perfil Completo -->
+            <!-- Step 2: Perfil Médico -->
             <div class="onboarding-step" data-step="2">
-                <div class="onboarding-icon">👤</div>
-                <h2>Tu Perfil</h2>
-                <p>Información básica para cálculos personalizados</p>
+                <div class="onboarding-icon">📋</div>
+                <h2>Datos Médicos</h2>
+                <p>Para cálculos científicos personalizados</p>
                 <div class="profile-setup">
                     <div class="form-row">
                         <input type="text" id="onboardingName" placeholder="Tu nombre" maxlength="20">
@@ -138,11 +161,11 @@
                 </div>
             </div>
 
-            <!-- Step 3: Calculador Contextual NUEVO -->
+            <!-- Step 3: Contexto Médico -->
             <div class="onboarding-step" data-step="3">
-                <div class="onboarding-icon">🧮</div>
-                <h2>Contexto de Hidratación</h2>
-                <p>El agua que necesitas varía según tu situación</p>
+                <div class="onboarding-icon">🔬</div>
+                <h2>Contexto Médico</h2>
+                <p>Factores que afectan tus necesidades de hidratación</p>
                 <div class="context-setup">
                     <div class="form-row">
                         <label>¿Dónde pasas la mayor parte del día?</label>
@@ -190,19 +213,33 @@
                 </div>
             </div>
 
-            <!-- Step 4: Notificaciones -->
+            <!-- Step 4: Análisis Personalizado -->
             <div class="onboarding-step" data-step="4">
-                <div class="onboarding-icon">🔔</div>
-                <h2>Recordatorios Inteligentes</h2>
-                <p>Te ayudaremos a no olvidar hidratarte</p>
-                <button class="notification-btn" id="enableNotificationsBtn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-                    </svg>
-                    Activar Notificaciones
-                </button>
-                <p class="notification-info">Puedes cambiar esto después en ajustes</p>
+                <div class="onboarding-icon">📊</div>
+                <h2>Tu Plan Personalizado</h2>
+                <p>Basado en tus datos médicos</p>
+                <div class="analysis-preview">
+                    <div class="analysis-card">
+                        <h3>Meta Diaria Calculada</h3>
+                        <div class="big-number" id="calculatedGoal">8 vasos</div>
+                        <p class="analysis-detail">Aproximadamente 2 litros al día</p>
+                    </div>
+                    <div class="health-benefits">
+                        <h4>Beneficios que obtendrás:</h4>
+                        <ul class="benefits-list">
+                            <li>✓ Mejora de concentración y claridad mental</li>
+                            <li>✓ Optimización de rendimiento físico</li>
+                            <li>✓ Mejor digestión y función metabólica</li>
+                            <li>✓ Piel más saludable e hidratada</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="notification-option">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="enableNotificationsCheckbox">
+                        <span>Activar notificaciones (opcional)</span>
+                    </label>
+                </div>
             </div>
 
             <!-- Navigation -->
