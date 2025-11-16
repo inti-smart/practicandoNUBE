@@ -273,8 +273,8 @@
                     </svg>
                 </div>
                 <div class="brand-info">
-                    <span class="brand-name">Hidratador</span>
-                    <span class="user-level" id="userLevel">Nivel 1</span>
+                    <span class="brand-name">Hidratador Pro</span>
+                    <span class="user-level" id="userLevel">Plan Médico</span>
                 </div>
             </div>
             <div class="top-actions">
@@ -303,10 +303,10 @@
             </div>
         </header>
 
-        <!-- Level Progress Bar -->
+        <!-- Weekly Adherence Bar -->
         <div class="level-progress-bar">
             <div class="level-info">
-                <span class="xp-text"><span id="currentXP">0</span> / <span id="requiredXP">100</span> XP</span>
+                <span class="xp-text">Adherencia Semanal: <span id="weeklyAdherence">0</span>%</span>
             </div>
             <div class="xp-bar">
                 <div class="xp-fill" id="xpFill" style="width: 0%"></div>
@@ -317,14 +317,14 @@
         <div class="views-container">
             <!-- Home View -->
             <section class="view active" id="homeView">
-                <!-- Daily Challenge -->
+                <!-- Daily Objective -->
                 <div class="daily-challenge">
-                    <div class="challenge-icon">🏆</div>
+                    <div class="challenge-icon">🎯</div>
                     <div class="challenge-content">
-                        <h3>Desafío de Hoy</h3>
-                        <p id="dailyChallengeText">Completa tu meta antes de las 8 PM</p>
+                        <h3>Objetivo Diario</h3>
+                        <p id="dailyChallengeText">Completa tu meta de hidratación</p>
                     </div>
-                    <div class="challenge-reward">+50 XP</div>
+                    <div class="challenge-status" id="challengeStatus">En progreso</div>
                 </div>
 
                 <!-- Hero Section -->
@@ -561,9 +561,7 @@
                         <div class="profile-info">
                             <input type="text" id="profileName" placeholder="Tu nombre" class="profile-input">
                             <div class="profile-stats-mini">
-                                <span>Nivel <strong id="profileLevel">1</strong></span>
-                                <span>•</span>
-                                <span><strong id="profileStreak">0</strong> días</span>
+                                <span>Racha: <strong id="profileStreak">0</strong> días consecutivos</span>
                             </div>
                         </div>
                     </div>
