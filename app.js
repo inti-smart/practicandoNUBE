@@ -291,9 +291,9 @@ class HidratadorApp {
             const action = btn.dataset.action;
             const target = btn.dataset.target;
 
-            if (action === 'increment') {
+            if (action === 'increase') {
                 this.incrementSetting(target);
-            } else if (action === 'decrement') {
+            } else if (action === 'decrease') {
                 this.decrementSetting(target);
             }
         });
@@ -1518,12 +1518,15 @@ class HidratadorApp {
         const limit = limits[target];
         if (!limit) return;
 
-        const input = document.getElementById(`${target}Input`);
+        const input = document.getElementById(target);
         if (!input) return;
 
         let value = parseInt(input.value) || limit.min;
         value = Math.min(value + limit.step, limit.max);
         input.value = value;
+
+        // Auto-save on change
+        this.saveSettings();
     }
 
     decrementSetting(target) {
@@ -1536,12 +1539,15 @@ class HidratadorApp {
         const limit = limits[target];
         if (!limit) return;
 
-        const input = document.getElementById(`${target}Input`);
+        const input = document.getElementById(target);
         if (!input) return;
 
         let value = parseInt(input.value) || limit.min;
         value = Math.max(value - limit.step, limit.min);
         input.value = value;
+
+        // Auto-save on change
+        this.saveSettings();
     }
 
     saveSettings() {
@@ -1562,15 +1568,17 @@ class HidratadorApp {
         }
 
         // Goals
-        if (this.elements.dailyGoalInput) {
-            const goal = parseInt(this.elements.dailyGoalInput.value);
+        const dailyGoalEl = document.getElementById('dailyGoal');
+        if (dailyGoalEl) {
+            const goal = parseInt(dailyGoalEl.value);
             if (goal >= 1 && goal <= 20) {
                 this.settings.dailyGoal = goal;
             }
         }
 
-        if (this.elements.glassSizeInput) {
-            const size = parseInt(this.elements.glassSizeInput.value);
+        const glassSizeEl = document.getElementById('glassSize');
+        if (glassSizeEl) {
+            const size = parseInt(glassSizeEl.value);
             if (size >= 100 && size <= 1000) {
                 this.settings.glassSize = size;
             }
@@ -1581,8 +1589,9 @@ class HidratadorApp {
             this.settings.notificationsEnabled = this.elements.notificationsEnabled.checked;
         }
 
-        if (this.elements.reminderIntervalInput) {
-            const interval = parseInt(this.elements.reminderIntervalInput.value);
+        const reminderIntervalEl = document.getElementById('reminderInterval');
+        if (reminderIntervalEl) {
+            const interval = parseInt(reminderIntervalEl.value);
             if (interval >= 15 && interval <= 240) {
                 this.settings.reminderInterval = interval;
             }
@@ -1618,16 +1627,19 @@ class HidratadorApp {
             this.elements.activityLevel.value = this.settings.activity;
         }
 
-        if (this.elements.dailyGoalInput) {
-            this.elements.dailyGoalInput.value = this.settings.dailyGoal;
+        const dailyGoalEl = document.getElementById('dailyGoal');
+        if (dailyGoalEl) {
+            dailyGoalEl.value = this.settings.dailyGoal;
         }
 
-        if (this.elements.glassSizeInput) {
-            this.elements.glassSizeInput.value = this.settings.glassSize;
+        const glassSizeEl = document.getElementById('glassSize');
+        if (glassSizeEl) {
+            glassSizeEl.value = this.settings.glassSize;
         }
 
-        if (this.elements.reminderIntervalInput) {
-            this.elements.reminderIntervalInput.value = this.settings.reminderInterval;
+        const reminderIntervalEl = document.getElementById('reminderInterval');
+        if (reminderIntervalEl) {
+            reminderIntervalEl.value = this.settings.reminderInterval;
         }
 
         if (this.elements.notificationsEnabled) {
